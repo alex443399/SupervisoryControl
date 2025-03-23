@@ -8,5 +8,3 @@ group def Cart_system():
 end
 
 Cart1 : Cart_system();
-Cart2 : Cart_system();
-

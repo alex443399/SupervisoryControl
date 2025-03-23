@@ -1,6 +1,8 @@
+// event emergency_breaks, emergency_over;
+
 import "Cart.cif";
 
-group def DC_motor(Cart_brain cart):
+group def DC_motor(Cart cart):
     // The cart variable is the Cart that the DC_motor belogs to, it is how it gets the shared variables and events
 
     plant keep_track_of_direction:
@@ -26,14 +28,14 @@ group def DC_motor(Cart_brain cart):
     plant keep_track_of_starts_and_stops:
         location idle:
             initial; marked;
-            edge cart.start_fw, cart.start_l, cart.start_r goto leaving_barcode;
+            edge cart.start_fw goto leaving_barcode;
 
         location leaving_barcode:
             edge cart.off_barcode_location goto left_the_barcode;
         location left_the_barcode:
             edge cart.on_barcode_location goto reached_new_location;
         location reached_new_location:
-            edge cart.stop_fw, cart.stop_l, cart.stop_r goto idle;
+            edge cart.stop_fw goto idle;
     end
 end
 

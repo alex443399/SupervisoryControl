@@ -1,0 +1,7 @@
+import "Cart.cif", "DC motor.cif", "Lifting_mechanism.cif";
+
+
+cart1 : Cart();
+motor1 : DC_motor(cart1);
+lift1 : Lifting_mechanism(cart1);
+

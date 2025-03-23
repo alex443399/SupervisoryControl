@@ -1,0 +1,10 @@
+
+import "Cart.cif";
+
+plant def Location_barcode_sensor(Cart cart):
+
+    location on_top_of_barcode: initial;marked;
+        edge cart.off_barcode_location goto not_on_top_of_barcode;
+    location not_on_top_of_barcode:
+        edge cart.on_barcode_location goto on_top_of_barcode;
+end

@@ -1,4 +1,4 @@
-plant def Cart_brain():
+plant def Cart():
 
     event start_fw, start_l, start_r, stop_fw, stop_l, stop_r;
     event start_lifting, start_lowering, stop_lifting, stop_lowering;
@@ -16,3 +16,5 @@ plant def Cart_brain():
         edge stop_fw, stop_l, stop_r goto idle; // stops moving
 
 end
+
+

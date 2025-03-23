@@ -16,3 +16,9 @@ plant def Cart_brain():
         edge stop_fw, stop_l, stop_r goto idle; // stops moving
 
 end
+
+
+group def Cart_system():
+    brain : Cart_brain();
+    motor : DC_motor(brain);
+end

@@ -1,4 +1,4 @@
-import "Cart.cif", "DC motor.cif", "Lifting_mechanism.cif", "Location_barcode_sensor.cif";
+import "Cart.cif", "DC motor.cif", "Lifting_mechanism.cif";
 
 group def Cart_system():
     brain : Cart_brain();
@@ -6,7 +6,4 @@ group def Cart_system():
     lift : Lifting_mechanism(brain);
     location_barcode_sensor : Location_barcode_sensor(brain);
 end
-
-Cart1 : Cart_system();
-Cart2 : Cart_system();
 

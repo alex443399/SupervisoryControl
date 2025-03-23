@@ -1,6 +1,6 @@
 import "Cart.cif";
 
-plant def Lifting_mechanism(Cart_brain cart):
+plant def Lifting_mechanism(Cart cart):
 
     location lift_down:
         initial; marked;

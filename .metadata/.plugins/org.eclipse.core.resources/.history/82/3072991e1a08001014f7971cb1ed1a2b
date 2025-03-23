@@ -7,6 +7,3 @@ group def Cart_system():
     location_barcode_sensor : Location_barcode_sensor(brain);
 end
 
-Cart1 : Cart_system();
-Cart2 : Cart_system();
-

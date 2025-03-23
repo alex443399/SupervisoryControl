@@ -1,0 +1,12 @@
+import "Cart.cif", "DC motor.cif", "Lifting_mechanism.cif";
+
+group def Cart_system():
+    brain : Cart_brain();
+    motor : DC_motor(brain);
+
+end
+
+cart1 : Cart();
+motor1 : DC_motor(cart1);
+lift1 : Lifting_mechanism(cart1);
+
