@@ -7,7 +7,7 @@ plant def DC_motor(Cart cart):
 
     //disc int count = 0;
     location idle:
-        initial; marked;
+        initial;
         edge cart.start_fw goto moving_forward;
         edge cart.start_r goto turning_right;
         edge cart.start_l goto turning_left;

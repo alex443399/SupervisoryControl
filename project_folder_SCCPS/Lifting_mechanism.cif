@@ -1,0 +1,14 @@
+import "Cart.cif";
+
+plant def Lifting_mechanism(Cart cart):
+
+    location lift_down:
+        initial; marked;
+        edge cart.start_lifting goto lifting;
+    location lifting:
+        edge cart.stop_lifting goto lift_up;
+    location lift_up:
+        edge cart.start_lowering goto lowering;
+    location lowering:
+        edge cart.stop_lowering goto lift_down;
+end
