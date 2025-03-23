@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Code for automata&apos; to &apos;project_folder_SCCPS&apos;" description="Rename resource &apos;Code for automata&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/Code for automata" name="project_folder_SCCPS" stamp="1742752882131" updateReferences="true"/>
+</session>
