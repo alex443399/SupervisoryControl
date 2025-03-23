@@ -1,0 +1,18 @@
+plant Cart():
+
+    event start_fw, start_l, start_r, stop_fw, stop_l, stop_r;
+
+
+
+    location idle: initial; marked;
+        edge start_fw, start_l, start_r goto moving; // Cart is moving
+    location using_lifter:
+
+    location charging:
+
+    location moving:
+        edge stop_fw, stop_l, stop_r goto idle; // stops moving
+
+end
+
+cart1 : Cart();

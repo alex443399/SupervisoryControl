@@ -1,0 +1,27 @@
+event emergency_breaks, emergency_over;
+
+import "Cart.cif";
+
+plant def DC_motor(Cart cart):
+
+    //disc int count = 0;
+    location idle:
+        initial;
+        edge cart.start_fw goto fw;
+        edge cart.start_r goto tr;
+        edge cart.start_l goto tl;
+        edge emergency_breaks goto estop;
+        // edge emergency_breaks when count < 3 do count := count + 1 goto estop; example with variables
+    location fw:
+        edge done_fw goto idle;
+        edge emergency_breaks goto estop;
+    location tr:
+        edge done_tr goto idle;
+        edge emergency_breaks goto estop;
+    location tl:
+        edge done_tl goto idle;
+        edge emergency_breaks goto estop;
+    location estop:
+        edge emergency_over goto idle;
+end
+

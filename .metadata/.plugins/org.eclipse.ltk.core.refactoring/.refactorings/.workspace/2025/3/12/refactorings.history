@@ -1,4 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename resource &apos;Code for automata&apos; to &apos;project_folder_SCCPS&apos;" description="Rename resource &apos;Code for automata&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/Code for automata" name="project_folder_SCCPS" stamp="1742752882131" updateReferences="true"/>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;Code for automata&apos; to &apos;project_folder_SCCPS&apos;" description="Rename resource &apos;Code for automata&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/Code for automata" name="project_folder_SCCPS" stamp="1742752882131" updateReferences="true"/>&#x0A;<refactoring comment="Delete resource &apos;project_folder_SCCPS/Cart&apos;" deleteContents="false" description="Delete resource &apos;project_folder_SCCPS/Cart&apos;" element1="/project_folder_SCCPS/Cart" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1742753029852"/>
 </session>

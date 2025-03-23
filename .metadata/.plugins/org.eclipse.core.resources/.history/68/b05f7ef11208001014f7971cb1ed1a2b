@@ -1,0 +1,5 @@
+import "Cart.cif", "DC motor.cif";
+
+
+cart1 : Cart();
+motor1 : DC_Motor();

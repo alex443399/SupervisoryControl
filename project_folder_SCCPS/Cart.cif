@@ -1,0 +1,20 @@
+plant def Cart():
+
+    event start_fw, start_l, start_r, stop_fw, stop_l, stop_r;
+    event start_lifting, start_lowering, stop_lifting, stop_lowering;
+
+
+
+    location idle: initial; marked;
+        edge start_fw, start_l, start_r goto moving; // Cart is moving
+        edge start_lifting, start_lowering goto using_lifter; // Cart using lifting mechanism
+
+    location using_lifter:
+        edge stop_lifting, stop_lowering goto idle; // Lifting mechanism no longer in use
+
+    location moving:
+        edge stop_fw, stop_l, stop_r goto idle; // stops moving
+
+end
+
+
