@@ -1,1 +1,14 @@
+//Product stack barcode camera
+controllable scan_production_stack_barcode;
+uncontrollable on_code, off_code;
 
+plant product_stack_barcode_camera:
+    location idle:
+        initial;
+        marked;
+        edge scan_production_stack_barcode goto scan;
+
+    location scan:
+        edge on_code goto idle;
+        edge off_code goto idle;
+end
