@@ -1,26 +1,3 @@
-//nfrared sensor
-uncontrollable infrared_stimulate, infrared_unstimulate;
-plant infrared_sensor:
-    location unactive:
-        initial; marked;
-        edge infrared_stimulate goto active;
-    location active:
-        marked;
-        edge infrared_unstimulate goto unactive;
-end
-
-
-// Touch sensor
-uncontrollable touch_stimulate, touch_unstimulate;
-
-plant touch_sensor:
-    location unactive:
-        initial; marked;
-        edge touch_stimulate goto active;
-    location active:
-        marked;
-        edge touch_unstimulate goto unactive;
-end
 
 //Location barcode camera
 controllable scan_location_barcode;
