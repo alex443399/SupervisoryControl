@@ -1,1 +1,11 @@
 
+//nfrared sensor
+uncontrollable infrared_stimulate, infrared_unstimulate;
+plant infrared_sensor:
+    location unactive:
+        initial; marked;
+        edge infrared_stimulate goto active;
+    location active:
+        marked;
+        edge infrared_unstimulate goto unactive;
+end
