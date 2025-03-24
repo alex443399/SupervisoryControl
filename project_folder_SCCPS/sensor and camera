@@ -1,0 +1,55 @@
+//nfrared sensor
+uncontrollable infrared_stimulate, infrared_unstimulate;
+plant infrared_sensor:
+    location unactive:
+        initial; marked;
+        edge infrared_stimulate goto active;
+    location active:
+        marked;
+        edge infrared_unstimulate goto unactive;
+end
+
+
+// Touch sensor
+uncontrollable touch_stimulate, touch_unstimulate;
+
+plant touch_sensor:
+    location unactive:
+        initial; marked;
+        edge touch_stimulate goto active;
+    location active:
+        marked;
+        edge touch_unstimulate goto unactive;
+end
+
+//Location barcode camera
+controllable scan_location_barcode;
+uncontrollable on_barcode, off_barcode;
+
+plant loc_barcode_camera:
+    location idle:
+        initial;
+        marked;
+        edge scan_location_barcode goto scan;
+
+    location scan:
+        edge on_barcode goto idle;
+        edge off_barcode goto idle;
+end
+
+//Product stack barcode camera
+controllable scan_production_stack_barcode;
+uncontrollable on_code, off_code;
+
+plant product_stack_barcode_camera:
+    location idle:
+        initial;
+        marked;
+        edge scan_production_stack_barcode goto scan;
+
+    location scan:
+        edge on_code goto idle;
+        edge off_code goto idle;
+end
+
+
