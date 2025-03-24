@@ -1,1 +1,11 @@
+// Touch sensor
+uncontrollable touch_stimulate, touch_unstimulate;
 
+plant touch_sensor:
+    location unactive:
+        initial; marked;
+        edge touch_stimulate goto active;
+    location active:
+        marked;
+        edge touch_unstimulate goto unactive;
+end
