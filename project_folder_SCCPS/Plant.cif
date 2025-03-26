@@ -6,6 +6,7 @@ group def Cart_system():
     motor : DC_motor(brain);
     lift : Lifting_mechanism(brain);
     location_barcode_sensor : Location_barcode_sensor(brain);
+
     Product_stack_barcode_camera : Product_stack_barcode_camera (brain);
     Location_barcode_camera:Location_barcode_camera (brain);
     Touch_sensor:Touch_sensor (brain);
