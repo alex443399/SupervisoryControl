@@ -1,11 +1,12 @@
 //Product stack barcode camera
+import "Cart.cif";
+
 controllable scan_production_stack_barcode;
 uncontrollable on_code, off_code;
 
-plant product_stack_barcode_camera:
+plant def product_stack_barcode_camera(Cart_brain cart):
     location idle:
-        initial;
-        marked;
+        initial;marked;
         edge scan_production_stack_barcode goto scan;
 
     location scan:
