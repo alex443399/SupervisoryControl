@@ -1,9 +1,11 @@
 
 //Location barcode camera
+import "Cart.cif";
+
 controllable scan_location_barcode;
 uncontrollable on_barcode, off_barcode;
 
-plant loc_barcode_camera:
+plant def loc_barcode_camera(Cart_brain cart):
     location idle:
         initial;
         marked;
