@@ -1,7 +1,8 @@
 // Touch sensor
+import "Cart.cif";
 uncontrollable touch_stimulate, touch_unstimulate;
 
-plant touch_sensor:
+plant def touch_sensor(Cart_brain cart):
     location unactive:
         initial; marked;
         edge touch_stimulate goto active;
