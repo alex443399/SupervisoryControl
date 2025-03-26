@@ -1,5 +1,5 @@
 import "Cart.cif", "DC motor.cif", "Lifting_mechanism.cif", "Location_barcode_sensor.cif";
-imoort "Location_barcode_camera.cif","Product_stack_barcode_camera.cif","Touch_sensor.cif","infrared_sensor.cif";
+import "Location_barcode_camera.cif","Product_stack_barcode_camera.cif","Touch_sensor.cif","infrared_sensor.cif";
 
 group def Cart_system():
     brain : Cart_brain();
