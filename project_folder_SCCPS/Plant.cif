@@ -3,7 +3,7 @@ import "Cart model/Cart communicator.cif";
 import "Cart model/Location_barcode_sensor.cif";
 // import "Product stack barcode camera.cif","Touch sensor.cif","infrared sensor.cif";
 
-import "M requirements.cif";
+import "M requirements.cif", "L requirements.cif";
 
 group def Cart_system():
     brain : Cart_brain();
@@ -14,6 +14,7 @@ group def Cart_system():
 
     m1 : M1(brain, location_barcode_sensor);
     m2 : M2(brain);
+    l3 : L3(comm);
 
 end
 
