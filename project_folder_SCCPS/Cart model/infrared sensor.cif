@@ -1,6 +1,6 @@
+//infrared sensor
+import "Cart brain.cif";
 
-//nfrared sensor
-import "Cart.cif";
 uncontrollable infrared_stimulate, infrared_unstimulate;
 plant def infrared_sensor(Cart_brain cart):
     location unactive:

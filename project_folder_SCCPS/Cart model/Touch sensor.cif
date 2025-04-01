@@ -1,5 +1,5 @@
 // Touch sensor
-import "Cart.cif";
+import "Cart brain.cif";
 uncontrollable touch_stimulate, touch_unstimulate;
 
 plant def touch_sensor(Cart_brain cart):

@@ -1,5 +1,5 @@
 //Product stack barcode camera
-import "Cart.cif";
+import "Cart brain.cif";
 
 controllable scan_production_stack_barcode;
 uncontrollable on_code, off_code;
