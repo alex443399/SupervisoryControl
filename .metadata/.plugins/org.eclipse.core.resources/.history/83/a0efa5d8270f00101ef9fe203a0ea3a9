@@ -1,0 +1,11 @@
+import "Cart model/Cart brain.cif", "Cart model/Location_barcode_sensor.cif";
+
+group def M1(Cart_brain brain; Location_barcode_sensor location_barcode_sensor):
+
+    requirement brain.start_l needs location_barcode_sensor.on_top_of_barcode;
+    requirement brain.start_r needs location_barcode_sensor.on_top_of_barcode;
+
+    requirement brain.start_lifting needs location_barcode_sensor.on_top_of_barcode;
+    requirement brain.start_lowering needs location_barcode_sensor.on_top_of_barcode;
+
+end

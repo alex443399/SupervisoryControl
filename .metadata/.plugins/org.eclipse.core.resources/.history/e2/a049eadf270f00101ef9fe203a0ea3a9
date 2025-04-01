@@ -1,0 +1,22 @@
+import "Cart model/Cart brain.cif", "Cart model/Location_barcode_sensor.cif";
+
+group def M1(Cart_brain brain; Location_barcode_sensor location_barcode_sensor):
+
+    requirement brain.start_l needs location_barcode_sensor.on_top_of_barcode;
+    requirement brain.start_r needs location_barcode_sensor.on_top_of_barcode;
+
+    requirement brain.start_lifting needs location_barcode_sensor.on_top_of_barcode;
+    requirement brain.start_lowering needs location_barcode_sensor.on_top_of_barcode;
+
+end
+
+requirement def M2(Cart_brain brain):
+
+    location idle: initial; marked;
+        edge start_fw, start_l, start_r goto moving; // Cart is moving
+        edge start_lifting, start_lowering goto using_lifter; // Cart using lifting mechanism
+    location using_lifter:
+        edge stop_lifting, stop_lowering goto idle; // Lifting mechanism no longer in use
+    location moving:
+        edge stop_fw, stop_l, stop_r goto idle; // stops moving
+end

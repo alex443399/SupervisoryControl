@@ -9,8 +9,6 @@ group def Cart_system():
     lift : Lifting_mechanism(brain);
     location_barcode_sensor : Location_barcode_sensor(brain);
 
-    m1 : M1(brain, location_barcode_sensor);
-    m2 : M2(brain);
 
 end
 
