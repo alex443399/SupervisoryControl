@@ -1,0 +1,19 @@
+import "Cart brain.cif";
+
+plant def request_handler(Cart_brain brain):
+    controllable request_storage, request_picking, request_charging;
+    uncontrollable granted_storage, granted_picking, granted_charging;
+    uncontrollable denied_storage, denied_picking, denied_charging;
+
+    location idle:initial;marked;
+        edge request_storage goto requesting_storage;
+        edge request_picking goto requesting_picking;
+        edge request_charging goto requesting_charging;
+    location requesting_storage:
+        edge granted_storage, denied_storage goto idle;
+    location requesting_picking:
+        edge granted_picking, denied_picking goto idle;
+    location requesting_charging:
+        edge granted_charging, denied_charging goto idle;
+
+end
