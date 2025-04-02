@@ -1,0 +1,74 @@
+import "Cart brain.cif";
+
+plant def Battery(Cart_brain cart):
+
+  disc int aHL = 1; // adjustible discharging rates
+  disc int aFH = 1;
+  disc int aLC = 1;
+  disc int aCE = 1;
+  disc int aEC = 1; // adjustible charging rates
+  disc int aCL = 1;
+  disc int aLH = 1;
+  disc int aHF = 1;
+  disc int b = 100;
+
+  //discharge and stop pertain to multiple events from other automata (event names to be added);
+  controllable discharge, stop, critical_discharge, replace_battery, start_charging, charge, stop_charging;
+  uncontrollable deplete;
+
+  location StandBy:
+    initial;
+    marked;
+    edge discharge when (b>90) do b := b - aFH goto FulltoHigh;
+    edge discharge when (b>10) and (b<=90) do b := b - aHL goto HightoLow;
+    edge discharge when (b>5) and (b<=10) do b := b - aLC goto LowtoCritical;
+    edge start_charging when (b>5) and (b<=10) do b := b + aHF goto CriticaltoLow;
+    edge start_charging when (b>10) and (b<=90) do b := b + aLH goto LowtoHigh;
+    edge start_charging when (b>90) do b := b + aHF goto HightoFull;
+
+  location FulltoHigh:
+    edge discharge when (b>90) do b := b - aFH goto FulltoHigh;
+    edge discharge when (b<=90) do b := b - aFH goto HightoLow;
+    edge stop goto StandBy;
+
+  location HightoLow:
+    edge discharge when (b>10) do b := b - aHL goto HightoLow;
+    edge discharge when (b<=10) do b := b - aHL goto LowtoCritical;
+    edge stop goto StandBy;
+
+  location LowtoCritical:
+    edge discharge when (b>5) do b := b - aLC goto LowtoCritical;
+    edge discharge when (b<=5) do b := b - aLC goto CriticaltoEmpty;
+    edge stop goto StandBy;
+
+  // proactive guards to be added and coupled with deplete to avoid negative values;
+  location CriticaltoEmpty:
+    edge critical_discharge when (b>0) do b := b - aCE goto CriticaltoEmpty;
+    edge deplete when (b=0) goto Empty;
+    edge replace_battery do b := 100 goto StandBy;
+    edge start_charging do b := b + aEC goto EmptytoCritical;
+
+  location Empty:
+    edge replace_battery do b := 100 goto StandBy;
+
+  location EmptytoCritical:
+    edge charge when (b<5) do b := b + aEC goto EmptytoCritical;
+    edge charge when (b>=5) do b := b + aCL goto CriticaltoLow;
+    edge stop_charging goto StandBy;
+
+  location CriticaltoLow:
+    edge charge when (b<10) do b := b + aCL goto CriticaltoLow;
+    edge charge when (b>=10) do b := b + aLH goto LowtoHigh;
+    edge stop_charging goto StandBy;
+
+  location LowtoHigh:
+    edge charge when (b<90) do b := b + aLH goto LowtoHigh;
+    edge charge when (b>=90) do b := b + aHF goto FulltoHigh;
+    edge stop_charging goto StandBy;
+
+  // proactive guards to be added for avoiding overshooting;
+  location HightoFull:
+    edge charge when (b<100) do b := b + aHF goto HightoFull;
+    edge stop_charging goto StandBy;
+
+end
