@@ -9,7 +9,7 @@ group def DC_motor(Cart_brain cart):
             edge cart.start_fw goto moving_forward;
             edge cart.start_r goto turning_right;
             edge cart.start_l goto turning_left;
-    //         edge emergency_breaks goto estop;
+    //        edge emergency_breaks goto estop;
         location moving_forward:
             edge cart.stop_fw goto idle;
     //         edge emergency_breaks goto estop;
@@ -36,4 +36,3 @@ group def DC_motor(Cart_brain cart):
             edge cart.stop_fw, cart.stop_l, cart.stop_r goto idle;
     end
 end
-
