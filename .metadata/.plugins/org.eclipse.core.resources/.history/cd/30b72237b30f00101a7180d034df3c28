@@ -1,0 +1,21 @@
+import "Cart model/Cart brain.cif";
+
+requirement def L3(Cart_brain brain):
+    location idle:initial;marked;
+        edge brain.request_storage goto requesting_storage;
+        edge brain.request_picking goto requesting_picking;
+        edge brain.request_charging goto requesting_charging;
+    location requesting_storage:
+        edge brain.granted_storage, brain.denied_storage goto idle;
+    location requesting_picking:
+        edge brain.granted_picking, brain.denied_picking goto idle;
+    location requesting_charging:
+        edge brain.granted_charging, brain.denied_charging goto idle;
+end
+
+requirement def L4(Cart_brain brain):
+
+    location not_requesting:initial;marked;
+        edge brain.start_fw, brain.start_l, brain.start_r, brain.stop_fw;
+        edge brain.request_storage
+end

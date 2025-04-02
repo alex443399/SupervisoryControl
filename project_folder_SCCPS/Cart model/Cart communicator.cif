@@ -1,9 +1,7 @@
 import "Cart brain.cif";
 
 plant def request_handler(Cart_brain brain):
-    controllable request_storage, request_picking, request_charging;
-    uncontrollable granted_storage, granted_picking, granted_charging;
-    uncontrollable denied_storage, denied_picking, denied_charging;
+
     // We will have counters that make sure the request granted and denied can only happen when pending requests are active
     const int max_requests = 5;
     disc int[0..max_requests] count_store = 0;
@@ -13,15 +11,15 @@ plant def request_handler(Cart_brain brain):
     alg bool can_send_requests = total_requests < max_requests;
 
     location communicating:initial; marked;
-        edge request_storage when can_send_requests do count_store := count_store+1;
-        edge request_picking when can_send_requests do count_pick := count_pick+1;
-        edge request_charging when can_send_requests do count_charge := count_charge+1;
+        edge brain.request_storage when can_send_requests do count_store := count_store+1;
+        edge brain.request_picking when can_send_requests do count_pick := count_pick+1;
+        edge brain.request_charging when can_send_requests do count_charge := count_charge+1;
         // DENIED
-        edge denied_storage when count_store > 0 do count_store := count_store-1;
-        edge denied_picking when count_pick > 0 do count_pick := count_pick-1;
-        edge denied_charging when count_charge > 0  do count_charge := count_charge-1;
+        edge brain.denied_storage when count_store > 0 do count_store := count_store-1;
+        edge brain.denied_picking when count_pick > 0 do count_pick := count_pick-1;
+        edge brain.denied_charging when count_charge > 0  do count_charge := count_charge-1;
         // ACCEPTED
-        edge granted_storage when count_store > 0 do count_store := count_store-1;
-        edge granted_picking when count_pick > 0 do count_pick := count_pick-1;
-        edge granted_charging when count_charge > 0  do count_charge := count_charge-1; // Add locations
+        edge brain.granted_storage when count_store > 0 do count_store := count_store-1;
+        edge brain.granted_picking when count_pick > 0 do count_pick := count_pick-1;
+        edge brain.granted_charging when count_charge > 0  do count_charge := count_charge-1; // Add locations
 end

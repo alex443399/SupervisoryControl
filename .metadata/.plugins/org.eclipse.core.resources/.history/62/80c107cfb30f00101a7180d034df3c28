@@ -15,15 +15,12 @@ end
 
 requirement def L4(Cart_brain brain):
 
-    location inactive:initial;marked;
-        edge brain.start_fw, brain.start_l, brain.start_r, brain.stop_fw goto busy; // We can only move when not requesting
-        edge brain.start_lifting, brain.start_lowering goto busy; // We can only move when not requesting
+    location not_requesting:initial;marked;
+        edge brain.start_fw, brain.start_l, brain.start_r, brain.stop_fw; // We can only move when not requesting
+        edge brain.start_lifting, brain.start_lowering; // We can only move when not requesting
 
         edge brain.request_storage, brain.request_picking, brain.request_charging goto requesting;
-    location busy:
-        edge brain.stop_fw, brain.stop_l, brain.stop_r goto inactive;
-        edge brain.stop_lifting, brain.stop_lowering goto inactive;
     location requesting:
-        edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto inactive;
-        edge brain.denied_storage, brain.denied_picking, brain.denied_charging goto inactive;
+        edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto not_requesting;
+        edge brain.denied_storage, brain.denied_picking, brain.denied_charging goto not_requesting;
 end

@@ -1,19 +1,11 @@
 group def Cart_brain():
-    // Moving variables
+    // In here we will store all of the events and variables of the cars for easy access
     controllable start_fw, start_l, start_r, stop_fw;
     uncontrollable stop_l, stop_r;
-
-    // Lifiting event
     controllable start_lifting, start_lowering;
     uncontrollable stop_lifting, stop_lowering;
-
-    // Barcode events
     uncontrollable on_barcode_location, off_barcode_location;
 
-    // Communicator events
-    controllable request_storage, request_picking, request_charging;
-    uncontrollable granted_storage, granted_picking, granted_charging;
-    uncontrollable denied_storage, denied_picking, denied_charging;
 //     event touch_stimulate, infrared_stimulate, scan_production_stack_barcode;
 
 

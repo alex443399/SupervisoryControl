@@ -1,5 +1,5 @@
 group def Cart_brain():
-    // Moving variables
+    // In here we will store all of the events and variables of the cars for easy access
     controllable start_fw, start_l, start_r, stop_fw;
     uncontrollable stop_l, stop_r;
 
