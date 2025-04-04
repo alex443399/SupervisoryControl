@@ -14,14 +14,6 @@ plant def Battery(Cart_brain cart):
 
     uncontrollable charge;
 
-    //discharge and stop pertain to multiple events from other automata (event names to be added);
-    //   controllable discharge, stop, critical_discharge, replace_battery, charge, stop_charging, start_charging;
-    //uncontrollable deplete; // redundant event
-
-    // discharge: cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging;
-    // critical_discharge: cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging;
-    // stop: cart.stop_l, cart.stop_r, cart.stop_fw, cart.stop_lifting, cart.stop_lowering, cart.granted_storage, cart.granted_picking, cart.granted_charging, cart.denied_storage, cart.denied_picking, cart.denied_charging;
-
   location StandBy:
     initial;
     marked;
@@ -44,7 +36,7 @@ plant def Battery(Cart_brain cart):
 
   location LowtoCritical:
     edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging when (b>5) do b := b - aLC goto LowtoCritical;
-    edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging when (b<=5) do b := b - aLC goto CriticaltoEmpty;
+    edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging when (b<=5) do b := b - aLC goto SendEmergency;
     edge cart.stop_l, cart.stop_r, cart.stop_fw, cart.stop_lifting, cart.stop_lowering, cart.granted_storage, cart.granted_picking, cart.granted_charging, cart.denied_storage, cart.denied_picking, cart.denied_charging goto StandBy;
 
   // proactive guards to be added and coupled with deplete to avoid negative values;
@@ -53,6 +45,9 @@ plant def Battery(Cart_brain cart):
     edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging when (b=0) do b := 0 goto Empty;
     edge cart.replace_battery do b := 100 goto StandBy;
     edge cart.start_charging do b := b + aEC goto EmptytoCritical;
+
+  location SendEmergency:
+    edge cart.battery_critical goto CriticaltoEmpty;
 
   location Empty:
     edge cart.replace_battery do b := 100 goto StandBy;
