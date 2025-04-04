@@ -1,0 +1,26 @@
+import "Cart brain.cif";
+
+group def Sensor(Cart_brain cart):
+
+    uncontrollable infrared_stimulate, infrared_unstimulate;
+    plant def infrared_sensor(Cart_brain cart):
+        location unactive:
+            initial; marked;
+            edge infrared_stimulate goto active;
+        location active:
+            marked;
+            edge infrared_unstimulate goto unactive;
+    end
+
+    uncontrollable touch_stimulate, touch_unstimulate;
+
+    plant def touch_sensor(Cart_brain cart):
+        location unactive:
+            initial; marked;
+            edge touch_stimulate goto active;
+        location active:
+            marked;
+            edge touch_unstimulate goto unactive;
+    end
+
+end
