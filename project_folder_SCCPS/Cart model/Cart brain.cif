@@ -24,5 +24,7 @@ group def Cart_brain():
    // location emergency or special condition:
         //edge touch_stimulate,infrared_stimulate, scan_production_stack_barcode goto idle;// stop move
 
+    //emergency
+    uncontrollable ee, problem_solved;
 
 end
