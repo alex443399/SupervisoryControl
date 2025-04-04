@@ -2,6 +2,8 @@ import "Cart model/Cart brain.cif", "Cart model/DC motor.cif", "Cart model/Lifti
 import "Cart model/Cart communicator.cif";
 import "Cart model/Location_barcode_sensor.cif";
 // import "Product stack barcode camera.cif","Touch sensor.cif","infrared sensor.cif";
+import "Cart model/sensor.cif";//,"Touch sensor.cif","infrared sensor.cif";
+import "Cart model/camera.cif";//,
 
 import "M requirements.cif", "L requirements.cif";
 
