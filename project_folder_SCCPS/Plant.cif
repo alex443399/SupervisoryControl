@@ -17,6 +17,7 @@ group def Cart_system():
     l3 : L3(brain);
     l4 : L4(brain);
     bat: Battery(brain);
+    l5: L5(brain, bat);
     order_req: order_of_requests(brain, bat);
 
 end
