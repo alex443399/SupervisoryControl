@@ -11,7 +11,7 @@ group def DC_motor(Cart_brain brain):
             edge brain.start_l goto turning_left;
             edge brain.touch_stimulate, brain.infrared_stimulate, brain.battery_critical goto emergency_break;
         location emergency_break:
-            edge brain.problem_solved goto idle;
+            edge brain.touch_unstimulate, brain.infrared_unstimulate, brain.replace_battery goto idle;
             edge brain.off_barcode_location, brain.on_barcode_location;
             edge brain.touch_stimulate, brain.infrared_stimulate, brain.battery_critical goto emergency_break;
 
