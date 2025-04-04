@@ -1,4 +1,4 @@
-import "Cart model/Cart brain.cif", "Cart model/Location_barcode_sensor.cif";
+import "Cart model/Cart brain.cif", "Cart model/Location_barcode_sensor.cif", "Cart model/Battery.cif";
 
 group def M1(Cart_brain brain; Location_barcode_sensor location_barcode_sensor):
 
@@ -20,3 +20,28 @@ requirement def M2(Cart_brain brain):
     location moving:
         edge brain.stop_fw, brain.stop_l, brain.stop_r goto idle; // stops moving
 end
+
+requirement def M6(Cart_brain brain; Battery battery):
+    location resources_available:
+        initial;
+        marked;
+        edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when (battery.b <= 5) goto immobilized;
+        edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when (battery.b > 5) goto executing; // executing is moving on M6 automaton
+    location executing:
+        edge cart.stop_l, cart.stop_r, cart.stop_fw, cart.stop_lifting, cart.stop_lowering goto resources_available;
+    location immobilized:
+        edge battery.replace_battery goto resources_available;
+end
+
+requirement def M7(Cart_brain brain; Battery battery): // I interpreted "moving" as in (1) moving from location to location as well as (2) lifting/lowering
+    location ready:
+        initial;
+        marked;
+        edge cart.start_fw, cart.start_l, cart.start_r goto ready;
+        edge cart.start_charging goto charging;
+    location charging:
+        edge cart.stop_charging when (battery.b = 100) goto ready;
+end
+
+
+
