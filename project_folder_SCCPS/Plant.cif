@@ -18,6 +18,9 @@ group def Cart_system():
 
     m1 : M1(brain, location_barcode_sensor);
     m2 : M2(brain);
+    m3 :  M3(brain);
+    m4 :  M4(brain);
+    m5 :  M5(brain);
     l4 : L4(brain);
     bat: Battery(brain);
     order_req: order_of_requests(brain, bat);
