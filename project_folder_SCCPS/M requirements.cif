@@ -21,7 +21,7 @@ requirement def M2(Cart_brain brain):
         edge brain.stop_fw, brain.stop_l, brain.stop_r goto idle; // stops moving
 end
 
-requirement def M6(Cart_brain brain; Battery battery):
+requirement def M6(Cart_brain cart; Battery battery):
     location resources_available:
         initial;
         marked;
@@ -33,7 +33,7 @@ requirement def M6(Cart_brain brain; Battery battery):
         edge battery.replace_battery goto resources_available;
 end
 
-requirement def M7(Cart_brain brain; Battery battery): // I interpreted "moving" as in (1) moving from location to location as well as (2) lifting/lowering
+requirement def M7(Cart_brain cart; Battery battery): // I interpreted "moving" as in (1) moving from location to location as well as (2) lifting/lowering
     location ready:
         initial;
         marked;
