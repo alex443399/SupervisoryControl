@@ -2,14 +2,14 @@ import "Cart brain.cif";
 
 plant def Battery(Cart_brain cart):
 
-  disc int aHL = 1; // adjustible discharging rates
-  disc int aFH = 1;
-  disc int aLC = 1;
-  disc int aCE = 1;
-  disc int aEC = 1; // adjustible charging rates
-  disc int aCL = 1;
-  disc int aLH = 1;
-  disc int aHF = 1;
+  const int aHL = 1; // adjustible discharging rates
+  const int aFH = 1;
+  const int aLC = 1;
+  const int aCE = 1;
+  const int aEC = 1; // adjustible charging rates
+  const int aCL = 1;
+  const int aLH = 1;
+  const int aHF = 1;
   disc int b = 100;
 
   //discharge and stop pertain to multiple events from other automata (event names to be added);
