@@ -16,11 +16,15 @@ group def Cart_system():
     sensor : Sensor(brain);
     camera: Camera(brain);
 
-    m1 : M1(brain, location_barcode_sensor);
-    m2 : M2(brain);
-    l4 : L4(brain);
+
     bat: Battery(brain);
     order_req: order_of_requests(brain, bat);
+
+    m1 : M1(brain, location_barcode_sensor);
+    m2 : M2(brain);
+    m6 : M6(brain, bat);
+    m7 : M7(brain, bat);
+    l4 : L4(brain);
 
 end
 
