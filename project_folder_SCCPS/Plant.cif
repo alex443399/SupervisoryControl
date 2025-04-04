@@ -25,6 +25,7 @@ group def Cart_system():
     m6 : M6(brain, bat);
     m7 : M7(brain, bat);
     l4 : L4(brain);
+    l5 : L5(brain, bat);
 
 end
 
