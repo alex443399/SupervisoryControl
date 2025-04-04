@@ -3,18 +3,15 @@ import "Cart brain.cif";
 group def Camera(Cart_brain cart):
 
         plant def Location_barcode_camera(Cart_brain cart):
+uncontrollable on_barcode_location, off_barcode_location;
+       location idle:
+        initial;
+        marked;
+        edge on_barcode_location goto scan;
 
-       controllable scan_location_barcode;
-    uncontrollable on_barcode, off_barcode;
-
-        location idle:
-            initial;
-            marked;
-            edge scan_location_barcode goto scan;
-
-        location scan:
-           // edge on_barcode goto idle;
-            edge off_barcode goto idle;
+    location scan:
+       // edge on_barcode goto idle;
+        edge off_barcode_location goto idle;
     end
 
 
