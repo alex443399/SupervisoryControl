@@ -2,6 +2,8 @@ import "Cart model/Cart brain.cif", "Cart model/DC motor.cif", "Cart model/Lifti
 import "Cart model/Cart communicator.cif";
 import "Cart model/Location_barcode_sensor.cif";
 // import "Product stack barcode camera.cif","Touch sensor.cif","infrared sensor.cif";
+import "Cart model/sensor.cif";//,"Touch sensor.cif","infrared sensor.cif";
+import "Cart model/camera.cif";//,
 
 import "M requirements.cif", "L requirements.cif";
 
@@ -11,6 +13,8 @@ group def Cart_system():
     lift : Lifting_mechanism(brain);
     location_barcode_sensor : Location_barcode_sensor(brain);
     comm : request_handler(brain);
+    sensor : Sensor(brain);
+    camera: Camera(brain);
 
     m1 : M1(brain, location_barcode_sensor);
     m2 : M2(brain);
