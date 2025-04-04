@@ -22,6 +22,13 @@ group def Cart_brain():
     // picking events
     controllable start_picking, stop_picking;
    // location emergency or special condition:
+    controllable scan_production_stack_barcode;
+    uncontrollable on_code, off_code;
+    uncontrollable infrared_stimulate, infrared_unstimulate;
+    uncontrollable touch_stimulate, touch_unstimulate;
+    controllable scan_location_barcode;
+
+
         //edge touch_stimulate,infrared_stimulate, scan_production_stack_barcode goto idle;// stop move
 
 
