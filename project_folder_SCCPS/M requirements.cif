@@ -21,40 +21,40 @@ requirement def M2(Cart_brain brain):
         edge brain.stop_fw, brain.stop_l, brain.stop_r goto idle; // stops moving
         edge brain.start_fw, brain.start_l, brain.start_r;
 end
-
-requirement def M3(Cart_brain brain):
-
-    location not_moveing:
-        initial;marked;
-        edge brain.on_barcode_location goto reached_new_barcode;
-        edge brain.infrared_stimulate,brain.touch_stimulate goto not_moveing;
-    location reached_new_barcode:
-        edge brain.on_barcode_location goto not_moveing;
-end
-
-requirement def M4(Cart_brain brain):
-    location infrared_undet:
-        initial; marked;
-        edge brain.infrared_stimulate goto infrared_det;
-        edge brain.start_fw goto infrared_undet;
-       // edge start_forward goto infrared_undet;
-
-    location infrared_det:
-        marked;
-        edge brain.infrared_unstimulate goto infrared_undet;
-end
-
-requirement def M5(Cart_brain brain):
-    location touch_undet:
-        initial; marked;
-        edge brain.touch_stimulate goto touch_det;
-        edge brain.start_fw, brain.start_l,brain.start_r goto touch_undet;
-       // edge start_forward goto infrared_undet;
-
-    location touch_det:
-        marked;
-        edge brain.touch_unstimulate goto touch_undet;
-end
+//
+// requirement def M3(Cart_brain brain):
+//
+//     location not_moveing:
+//         initial;marked;
+//         edge brain.on_barcode_location goto reached_new_barcode;
+//         edge brain.infrared_stimulate,brain.touch_stimulate goto not_moveing;
+//     location reached_new_barcode:
+//         edge brain.on_barcode_location goto not_moveing;
+// end
+//
+// requirement def M4(Cart_brain brain):
+//     location infrared_undet:
+//         initial; marked;
+//         edge brain.infrared_stimulate goto infrared_det;
+//         edge brain.start_fw goto infrared_undet;
+//        // edge start_forward goto infrared_undet;
+//
+//     location infrared_det:
+//         marked;
+//         edge brain.infrared_unstimulate goto infrared_undet;
+// end
+//
+// requirement def M5(Cart_brain brain):
+//     location touch_undet:
+//         initial; marked;
+//         edge brain.touch_stimulate goto touch_det;
+//         edge brain.start_fw, brain.start_l,brain.start_r goto touch_undet;
+//        // edge start_forward goto infrared_undet;
+//
+//     location touch_det:
+//         marked;
+//         edge brain.touch_unstimulate goto touch_undet;
+// end
 
 
 requirement def M6(Cart_brain cart; Battery battery):

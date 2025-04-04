@@ -9,7 +9,6 @@ group def Cart_brain():
 
     // Barcode events
     uncontrollable on_barcode_location, off_barcode_location;
-    uncontrollable on_barcode_product, off_barcode_product;
 
     // Communicator events
     controllable request_storage, request_picking, request_charging;
@@ -22,27 +21,11 @@ group def Cart_brain():
 
     // picking events
     controllable start_picking, stop_picking;
-
    // location emergency or special condition:
-    uncontrollable infrared_stimulate, infrared_unstimulate;
-    uncontrollable touch_stimulate, touch_unstimulate;
-
+    uncontrollable touch_stimulate, infrared_stimulate; //, scan_production_stack_barcode goto idle;// stop move
     uncontrollable battery_critical;
 
-    controllable replace_battery;
+    //emergency
+    uncontrollable ee, problem_solved, replace_battery;
 
-    plant Emergency_handler:
-        disc int[0..3] E_count = 0;// Emergency counter
-
-        location No_emergency: initial; marked;
-            edge touch_stimulate, infrared_stimulate, battery_critical
-                do E_count := E_count + 1 goto Emergency;
-        location Emergency:
-            edge touch_stimulate, infrared_stimulate, battery_critical
-                do E_count := E_count + 1;
-            edge touch_unstimulate, infrared_unstimulate, start_charging when E_count > 1
-                do E_count := E_count - 1;
-            edge touch_unstimulate, infrared_unstimulate, start_charging when E_count = 1
-                do E_count := E_count - 1 goto No_emergency;
-    end
 end
