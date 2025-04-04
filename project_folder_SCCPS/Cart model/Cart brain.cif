@@ -16,7 +16,8 @@ group def Cart_brain():
     uncontrollable denied_storage, denied_picking, denied_charging;
 //     event touch_stimulate, infrared_stimulate, scan_production_stack_barcode;
 
-
+    // charging events
+    controllable start_charging, stop_charging;
 
    // location emergency or special condition:
         //edge touch_stimulate,infrared_stimulate, scan_production_stack_barcode goto idle;// stop move
