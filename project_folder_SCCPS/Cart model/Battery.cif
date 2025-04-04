@@ -2,23 +2,25 @@ import "Cart brain.cif";
 
 plant def Battery(Cart_brain cart):
 
-  const int aHL = 1; // adjustible discharging rates
-  const int aFH = 1;
-  const int aLC = 1;
-  const int aCE = 1;
-  const int aEC = 1; // adjustible charging rates
-  const int aCL = 1;
-  const int aLH = 1;
-  const int aHF = 1;
-  disc int b = 100;
+    const int aHL = 1; // adjustible discharging rates
+    const int aFH = 1;
+    const int aLC = 1;
+    const int aCE = 1;
+    const int aEC = 1; // adjustible charging rates
+    const int aCL = 1;
+    const int aLH = 1;
+    const int aHF = 1;
+    disc int b = 100;
 
-  //discharge and stop pertain to multiple events from other automata (event names to be added);
-  controllable discharge, stop, critical_discharge, replace_battery, start_charging, charge, stop_charging;
-  //uncontrollable deplete; // redundant event
+    uncontrollable charge;
 
-  // discharge: cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging;
-  // critical_discharge: cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging;
-  // stop: cart.stop_l, cart.stop_r, cart.stop_fw, cart.stop_lifting, cart.stop_lowering, cart.granted_storage, cart.granted_picking, cart.granted_charging, cart.denied_storage, cart.denied_picking, cart.denied_charging;
+    //discharge and stop pertain to multiple events from other automata (event names to be added);
+    //   controllable discharge, stop, critical_discharge, replace_battery, charge, stop_charging, start_charging;
+    //uncontrollable deplete; // redundant event
+
+    // discharge: cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging;
+    // critical_discharge: cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging;
+    // stop: cart.stop_l, cart.stop_r, cart.stop_fw, cart.stop_lifting, cart.stop_lowering, cart.granted_storage, cart.granted_picking, cart.granted_charging, cart.denied_storage, cart.denied_picking, cart.denied_charging;
 
   location StandBy:
     initial;
@@ -26,9 +28,9 @@ plant def Battery(Cart_brain cart):
     edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging when (b>90) do b := b - aFH goto FulltoHigh;
     edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging when (b>10) and (b<=90) do b := b - aHL goto HightoLow;
     edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging when (b>5) and (b<=10) do b := b - aLC goto LowtoCritical;
-    edge start_charging when (b>5) and (b<=10) do b := b + aHF goto CriticaltoLow;
-    edge start_charging when (b>10) and (b<=90) do b := b + aLH goto LowtoHigh;
-    edge start_charging when (b>90) do b := b + aHF goto HightoFull;
+    edge cart.start_charging when (b>5) and (b<=10) do b := b + aHF goto CriticaltoLow;
+    edge cart.start_charging when (b>10) and (b<=90) do b := b + aLH goto LowtoHigh;
+    edge cart.start_charging when (b>90) do b := b + aHF goto HightoFull;
 
   location FulltoHigh:
     edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging when (b>90) do b := b - aFH goto FulltoHigh;
@@ -49,30 +51,30 @@ plant def Battery(Cart_brain cart):
   location CriticaltoEmpty:
     edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging when (b>0) do b := b - aCE goto CriticaltoEmpty;
     edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering, cart.request_storage, cart.request_picking, cart.request_charging when (b=0) do b := 0 goto Empty;
-    edge replace_battery do b := 100 goto StandBy;
-    edge start_charging do b := b + aEC goto EmptytoCritical;
+    edge cart.replace_battery do b := 100 goto StandBy;
+    edge cart.start_charging do b := b + aEC goto EmptytoCritical;
 
   location Empty:
-    edge replace_battery do b := 100 goto StandBy;
+    edge cart.replace_battery do b := 100 goto StandBy;
 
   location EmptytoCritical:
     edge charge when (b<5) do b := b + aEC goto EmptytoCritical;
     edge charge when (b>=5) do b := b + aCL goto CriticaltoLow;
-    edge stop_charging goto StandBy;
+    edge cart.stop_charging goto StandBy;
 
   location CriticaltoLow:
     edge charge when (b<10) do b := b + aCL goto CriticaltoLow;
     edge charge when (b>=10) do b := b + aLH goto LowtoHigh;
-    edge stop_charging goto StandBy;
+    edge cart.stop_charging goto StandBy;
 
   location LowtoHigh:
     edge charge when (b<90) do b := b + aLH goto LowtoHigh;
     edge charge when (b>=90) do b := b + aHF goto FulltoHigh;
-    edge stop_charging goto StandBy;
+    edge cart.stop_charging goto StandBy;
 
   // proactive guards to be added for avoiding overshooting;
   location HightoFull:
     edge charge when (b<100) do b := b + aHF goto HightoFull;
-    edge stop_charging goto StandBy;
+    edge cart.stop_charging goto StandBy;
 
 end

@@ -1,12 +1,12 @@
-import "Cart model/Cart brain.cif", "Cart model/Location_barcode_sensor.cif", "Cart model/Battery.cif";
+import "Cart model/Cart brain.cif", "Cart model/sensor.cif", "Cart model/Battery.cif";
 
-group def M1(Cart_brain brain; Location_barcode_sensor location_barcode_sensor):
+group def M1(Cart_brain brain;  Sensor_and_cameras sensors_and_cameras):
 
-    requirement brain.start_l needs location_barcode_sensor.on_top_of_barcode;
-    requirement brain.start_r needs location_barcode_sensor.on_top_of_barcode;
+    requirement brain.start_l needs sensors_and_cameras.Location_barcode_sensor.on_top_of_barcode;
+    requirement brain.start_r needs sensors_and_cameras.Location_barcode_sensor.on_top_of_barcode;
 
-    requirement brain.start_lifting needs location_barcode_sensor.on_top_of_barcode;
-    requirement brain.start_lowering needs location_barcode_sensor.on_top_of_barcode;
+    requirement brain.start_lifting needs sensors_and_cameras.Location_barcode_sensor.on_top_of_barcode;
+    requirement brain.start_lowering needs sensors_and_cameras.Location_barcode_sensor.on_top_of_barcode;
 
 end
 
@@ -66,7 +66,7 @@ requirement def M6(Cart_brain cart; Battery battery):
     location executing:
         edge cart.stop_l, cart.stop_r, cart.stop_fw, cart.stop_lifting, cart.stop_lowering goto resources_available;
     location immobilized:
-        edge battery.replace_battery goto resources_available;
+        edge cart.replace_battery goto resources_available;
 end
 
 requirement def M7(Cart_brain cart; Battery battery): // I interpreted "moving" as in (1) moving from location to location as well as (2) lifting/lowering
