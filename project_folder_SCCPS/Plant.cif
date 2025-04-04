@@ -33,9 +33,7 @@ Cart1 : Cart_system();
 Cart2 : Cart_system();
 
 
-//     controllable request_storage, request_picking, request_charging;
-//     uncontrollable granted_storage, granted_picking, granted_charging;
-//     uncontrollable denied_storage, denied_picking, denied_charging;
+
 
 plant resource_allocator:
     controllable process;

@@ -29,8 +29,20 @@ group def Cart_brain():
     uncontrollable touch_stimulate, touch_unstimulate;
     controllable scan_location_barcode;
 
+    uncontrollable battery_critical;
 
-        //edge touch_stimulate,infrared_stimulate, scan_production_stack_barcode goto idle;// stop move
+    plant Emergency_handler:
+        disc int[0..3] E_count = 0;// Emergency counter
 
-
+        location No_emergency: initial; marked;
+            edge touch_stimulate, infrared_stimulate, battery_critical
+                do E_count := E_count + 1 goto Emergency;
+        location Emergency:
+            edge touch_stimulate, infrared_stimulate, battery_critical
+                do E_count := E_count + 1;
+            edge touch_unstimulate, infrared_unstimulate, start_charging when E_count > 1
+                do E_count := E_count - 1;
+            edge touch_unstimulate, infrared_unstimulate, start_charging when E_count = 1
+                do E_count := E_count - 1 goto No_emergency;
+    end
 end
