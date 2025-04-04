@@ -19,6 +19,8 @@ group def Cart_brain():
     // charging events
     controllable start_charging, stop_charging;
 
+    // picking events
+    controllable start_picking, stop_picking;
    // location emergency or special condition:
         //edge touch_stimulate,infrared_stimulate, scan_production_stack_barcode goto idle;// stop move
 
