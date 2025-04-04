@@ -26,6 +26,6 @@ group def Cart_brain():
     uncontrollable battery_critical;
 
     //emergency
-    uncontrollable ee, problem_solved;
+    uncontrollable ee, problem_solved, replace_battery;
 
 end
