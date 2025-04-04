@@ -21,3 +21,49 @@ requirement def M2(Cart_brain brain):
         edge brain.stop_fw, brain.stop_l, brain.stop_r goto idle; // stops moving
         edge brain.start_fw, brain.start_l, brain.start_r;
 end
+
+import "Cart model/Cart brain.cif", "Cart model/Location_barcode_sensor.cif", "Cart model/Battery.cif";
+
+group def M1(Cart_brain brain; Location_barcode_sensor location_barcode_sensor):
+
+    requirement brain.start_l needs location_barcode_sensor.on_top_of_barcode;
+    requirement brain.start_r needs location_barcode_sensor.on_top_of_barcode;
+
+    requirement brain.start_lifting needs location_barcode_sensor.on_top_of_barcode;
+    requirement brain.start_lowering needs location_barcode_sensor.on_top_of_barcode;
+
+end
+
+requirement def M2(Cart_brain brain):
+
+    location idle: initial; marked;
+        edge brain.start_fw, brain.start_l, brain.start_r goto moving; // Cart is moving
+        edge brain.start_lifting, brain.start_lowering goto using_lifter; // Cart using lifting mechanism
+    location using_lifter:
+        edge brain.stop_lifting, brain.stop_lowering goto idle; // Lifting mechanism no longer in use
+    location moving:
+        edge brain.stop_fw, brain.stop_l, brain.stop_r goto idle; // stops moving
+end
+
+requirement def M6(Cart_brain cart; Battery battery):
+    location resources_available:
+        initial;
+        marked;
+        edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when (battery.b <= 5) goto immobilized;
+        edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when (battery.b > 5) goto executing; // executing is moving on M6 automaton
+    location executing:
+        edge cart.stop_l, cart.stop_r, cart.stop_fw, cart.stop_lifting, cart.stop_lowering goto resources_available;
+    location immobilized:
+        edge battery.replace_battery goto resources_available;
+end
+
+requirement def M7(Cart_brain cart; Battery battery): // I interpreted "moving" as in (1) moving from location to location as well as (2) lifting/lowering
+    location ready:
+        initial;
+        marked;
+        edge cart.start_fw, cart.start_l, cart.start_r goto ready;
+        edge cart.start_charging goto charging;
+    location charging:
+        edge cart.stop_charging when (battery.b = 100) goto ready;
+end
+

@@ -68,3 +68,10 @@ requirement def order_of_requests(Cart_brain brain; Battery bat):
         edge brain.request_storage goto get_rack_loc;
         edge brain.request_charging goto get_charging_loc;
 end
+
+requirement def L5(Cart_brain brain; Battery battery):
+    location permissible_request:
+        initial;
+        marked;
+        edge brain.request_charging when (battery.b <= 10) goto permissible_request;
+end
