@@ -1,26 +1,33 @@
 import "Cart brain.cif";
 
-group def Sensor(Cart_brain cart):
+group def Sensor_and_cameras(Cart_brain cart):
 
-    uncontrollable infrared_stimulate, infrared_unstimulate;
-    plant def infrared_sensor(Cart_brain cart):
-        location unactive:
-            initial; marked;
-            edge infrared_stimulate goto active;
+    plant infrared_sensor:
+        location inactive: initial; marked;
+            edge cart.infrared_stimulate goto active;
         location active:
-            marked;
-            edge infrared_unstimulate goto unactive;
+            edge cart.infrared_unstimulate goto inactive;
     end
 
-    uncontrollable touch_stimulate, touch_unstimulate;
-
-    plant def touch_sensor(Cart_brain cart):
-        location unactive:
-            initial; marked;
-            edge touch_stimulate goto active;
+    plant touch_sensor:
+        location inactive: initial; marked;
+            edge cart.touch_stimulate goto active;
         location active:
-            marked;
-            edge touch_unstimulate goto unactive;
+            edge cart.touch_unstimulate goto inactive;
+    end
+
+    plant Location_barcode_sensor:
+        location on_top_of_barcode: initial;marked;
+            edge cart.off_barcode_location goto not_on_top_of_barcode;
+        location not_on_top_of_barcode:
+            edge cart.on_barcode_location goto on_top_of_barcode;
+    end
+
+    plant Product_barcode_sensor:
+        location inactive: initial; marked;
+            edge cart.on_barcode_product goto active;
+        location active: marked;
+            edge cart.off_barcode_product goto inactive;
     end
 
 end

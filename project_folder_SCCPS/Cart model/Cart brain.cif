@@ -9,6 +9,7 @@ group def Cart_brain():
 
     // Barcode events
     uncontrollable on_barcode_location, off_barcode_location;
+    uncontrollable on_barcode_product, off_barcode_product;
 
     // Communicator events
     controllable request_storage, request_picking, request_charging;
@@ -23,13 +24,12 @@ group def Cart_brain():
     controllable start_picking, stop_picking;
 
    // location emergency or special condition:
-    controllable scan_production_stack_barcode;
-    uncontrollable on_code, off_code;
     uncontrollable infrared_stimulate, infrared_unstimulate;
     uncontrollable touch_stimulate, touch_unstimulate;
-    controllable scan_location_barcode;
 
     uncontrollable battery_critical;
+
+    controllable replace_battery;
 
     plant Emergency_handler:
         disc int[0..3] E_count = 0;// Emergency counter
