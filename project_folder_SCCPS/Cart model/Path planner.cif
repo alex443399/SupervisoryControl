@@ -1,0 +1,32 @@
+import "Cart brain.cif";
+
+plant def Path_planner(Cart_brain brain):
+    location idle:
+        initial;
+        marked;
+        edge brain.request_storage, brain.request_charging, brain.request_picking goto waiting_to_plan;
+
+    location waiting_to_plan:
+        edge brain.start_planning goto planning;
+
+    location planning:
+        edge brain.done_planning goto waiting_to_execute;
+
+    location waiting_to_execute:
+        edge brain.start_executing goto abort_question;
+
+    location abort_question:
+        edge brain.do_not_abort goto compare_location;
+        edge brain.abort_route goto idle;
+
+    location compare_location:
+        edge brain.final_location goto idle;
+        edge brain.not_final_location goto moving_forward;
+
+    location moving_forward:
+        edge brain.off_barcode_location goto midway;
+
+    location midway:
+        edge brain.on_barcode_location goto abort_question;
+
+end
