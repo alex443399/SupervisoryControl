@@ -1,0 +1,8 @@
+import "Cart model/Cart brain.cif", "Cart model/Battery.cif", "L requirements.cif";
+
+requirement def P3(Cart_brain brain; Battery battery; order_of_requests order):
+    location permissible_path_execution:
+        initial;
+        marked;
+        edge brain.do_not_abort when (battery.b >= 10) or order.move_to_charging goto permissible_path_execution;
+end

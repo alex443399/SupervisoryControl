@@ -9,34 +9,38 @@ group def DC_motor(Cart_brain brain):
             edge brain.start_fw goto moving_forward;
             edge brain.start_r goto turning_right;
             edge brain.start_l goto turning_left;
-            edge brain.touch_stimulate, brain.infrared_stimulate, brain.battery_critical goto emergency_break;
 
-        location emergency_break:
-            edge brain.touch_unstimulate, brain.infrared_unstimulate, brain.replace_battery goto idle;
-            edge brain.off_barcode_location, brain.on_barcode_location;
-            edge brain.touch_stimulate, brain.infrared_stimulate, brain.battery_critical goto emergency_break;
-
-        //move forward
         location moving_forward:
             edge brain.off_barcode_location;
             edge brain.on_barcode_location goto reached_barcode_fw;
-            edge brain.touch_stimulate, brain.infrared_stimulate, brain.battery_critical goto emergency_break;
 
         location reached_barcode_fw:
-            edge brain.start_fw goto moving_forward;
+//             edge brain.start_fw goto moving_forward;
             edge brain.stop_fw  goto idle;
-            edge brain.touch_stimulate, brain.infrared_stimulate, brain.battery_critical goto emergency_break;
 
         //turn right
         location turning_right:
             edge brain.stop_r goto idle;
-            edge brain.touch_stimulate, brain.infrared_stimulate, brain.battery_critical goto emergency_break;
 
         location turning_left:
             edge brain.stop_l goto idle;
-            edge brain.touch_stimulate, brain.infrared_stimulate, brain.battery_critical goto emergency_break;
     end
 
+    plant emergency_breaks_synchronization:
+        location no_emergency: initial; marked;
+            edge brain.start_fw, brain.start_l, brain.start_r;
+            edge brain.stop_fw, brain.stop_l, brain.stop_r;
+            edge brain.on_barcode_location, brain.off_barcode_location;
 
+            edge brain.touch_stimulate, brain.infrared_stimulate, brain.battery_critical goto emergency_break; // We are including M4-6 in the plant model
+
+        location emergency_break:
+            edge brain.touch_unstimulate, brain.infrared_unstimulate, brain.replace_battery
+                when brain.Emergency_handler.E_count = 1 goto no_emergency; // Leaving emergency
+            edge brain.touch_unstimulate, brain.infrared_unstimulate, brain.replace_battery
+                when brain.Emergency_handler.E_count > 1; // Leaving emergency
+            edge brain.touch_stimulate, brain.infrared_stimulate, brain.battery_critical;
+
+    end
 end
 
