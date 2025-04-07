@@ -23,6 +23,7 @@ requirement def L4(Cart_brain brain):
         edge brain.stop_fw, brain.stop_l, brain.stop_r goto inactive;
         edge brain.stop_lifting, brain.stop_lowering goto inactive;
         edge brain.start_fw, brain.start_l, brain.start_r;
+        edge brain.start_lifting, brain.start_lowering;
     location requesting:
         edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto inactive;
         edge brain.denied_storage, brain.denied_picking, brain.denied_charging goto inactive;

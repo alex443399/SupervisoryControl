@@ -21,6 +21,7 @@ requirement def M2(Cart_brain brain):
         edge brain.start_lifting, brain.start_lowering goto using_lifter; // Cart using lifting mechanism
     location using_lifter:
         edge brain.stop_lifting, brain.stop_lowering goto idle; // Lifting mechanism no longer in use
+        edge brain.start_lifting, brain.start_lowering;
     location moving:
         edge brain.stop_fw, brain.stop_l, brain.stop_r goto idle; // stops moving
         edge brain.start_fw, brain.start_l, brain.start_r;
@@ -61,17 +62,30 @@ end
 // end
 
 
+// requirement def M6(Cart_brain cart; Battery battery):
+//     location resources_available:
+//         initial;
+//         marked;
+//         edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when (battery.b <= 5) goto immobilized;
+//         edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when (battery.b > 5) goto executing; // executing is moving on M6 automaton
+//     location executing:
+//         edge cart.stop_l, cart.stop_r, cart.stop_fw, cart.stop_lifting, cart.stop_lowering goto resources_available;
+//         edge cart.start_lifting, cart.start_lowering, cart.start_fw, cart.start_r, cart.start_l;
+//     location immobilized:
+//         edge cart.replace_battery goto resources_available;
+// end
+
 requirement def M6(Cart_brain cart; Battery battery):
     location resources_available:
         initial;
         marked;
-        edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when (battery.b <= 5) goto immobilized;
-        edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when (battery.b > 5) goto executing; // executing is moving on M6 automaton
-    location executing:
-        edge cart.stop_l, cart.stop_r, cart.stop_fw, cart.stop_lifting, cart.stop_lowering goto resources_available;
+        edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when not (battery.CriticaltoEmpty) ;
+        edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when battery.CriticaltoEmpty goto immobilized ;
     location immobilized:
         edge cart.replace_battery goto resources_available;
 end
+
+
 
 requirement def M7(Cart_brain cart; Battery battery): // I interpreted "moving" as in (1) moving from location to location as well as (2) lifting/lowering
     location ready:
