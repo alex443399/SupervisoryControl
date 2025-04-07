@@ -31,6 +31,9 @@ group def Cart_brain():
     uncontrollable replace_battery;
     uncontrollable infrared_unstimulate, touch_unstimulate;
 
+    // path planner events
+    uncontrollable done_planning, final_location, not_final_location;
+    controllable start_planning, abort_route, do_not_abort, start_executing;
 
     plant Emergency_handler:
         disc int[0..3] E_count = 0;// Emergency counter
