@@ -87,13 +87,7 @@ end
 
 
 
-requirement def M7(Cart_brain cart; Battery battery): // I interpreted "moving" as in (1) moving from location to location as well as (2) lifting/lowering
-    location ready:
-        initial;
-        marked;
-        edge cart.start_fw, cart.start_l, cart.start_r goto ready;
-        edge cart.start_charging goto charging;
-    location charging:
-        edge cart.stop_charging when (battery.b = 100) goto ready;
+group def M7(Cart_brain cart; Battery battery):
+    requirement cart.stop_charging needs battery.b = 100;
 end
 
