@@ -4,27 +4,38 @@ plant def Lifting_mechanism(Cart_brain cart):
 
     location lift_down:
         initial; marked;
-        edge cart.start_lifting goto lifting;
+        edge cart.start_lifting when cart.Emergency_handler.No_emergency goto lifting;
+
+        // Non blocking emergency
+        edge cart.touch_stimulate, cart.infrared_stimulate, cart.battery_critical;
+        edge cart.touch_unstimulate, cart.infrared_unstimulate, cart.replace_battery;
     location lifting:
         edge cart.stop_lifting goto lift_up;
         edge cart.touch_stimulate, cart.infrared_stimulate, cart.battery_critical goto emergency_break;
         edge cart.interrupt_lift goto lift_middle;
     location lift_up:
         marked;
-        edge cart.start_lowering goto lowering;
+        edge cart.start_lowering when cart.Emergency_handler.No_emergency goto lowering;
+
+        // Non blocking
+        edge cart.touch_stimulate, cart.infrared_stimulate, cart.battery_critical;
+        edge cart.touch_unstimulate, cart.infrared_unstimulate, cart.replace_battery;
     location lowering:
         edge cart.stop_lowering goto lift_down;
-        edge cart.touch_stimulate, cart.infrared_stimulate, cart.battery_critical goto emergency_break;
         edge cart.interrupt_lift goto lift_middle;
-    location lift_middle:
-        edge cart.start_lifting goto lifting;
+
         edge cart.touch_stimulate, cart.infrared_stimulate, cart.battery_critical goto emergency_break;
-        edge cart.start_lowering goto lowering;
+    location lift_middle:
+        edge cart.start_lifting when cart.Emergency_handler.No_emergency goto lifting;
+        edge cart.start_lowering when cart.Emergency_handler.No_emergency goto lowering;
+
+        edge cart.touch_stimulate, cart.infrared_stimulate, cart.battery_critical goto emergency_break;
     location emergency_break:
         edge cart.touch_unstimulate, cart.infrared_unstimulate, cart.replace_battery
-        when cart.Emergency_handler.E_count = 1 goto lift_middle;
-        edge cart.touch_unstimulate, cart.infrared_unstimulate, cart.replace_battery
-        when cart.Emergency_handler.E_count != 1 goto emergency_break;
+            when cart.Emergency_handler.E_count = 1 goto lift_middle;
 
+        edge cart.touch_unstimulate, cart.infrared_unstimulate, cart.replace_battery
+            when cart.Emergency_handler.E_count != 1;
+        edge cart.touch_stimulate, cart.infrared_stimulate, cart.battery_critical;
 end
 
