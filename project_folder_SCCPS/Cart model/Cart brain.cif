@@ -5,7 +5,7 @@ group def Cart_brain():
 
     // Lifiting event
     controllable start_lifting, start_lowering;
-    uncontrollable stop_lifting, stop_lowering;
+    uncontrollable stop_lifting, stop_lowering, interrupt_lift;
 
     // Barcode events
     uncontrollable on_barcode_location, off_barcode_location;
