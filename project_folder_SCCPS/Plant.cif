@@ -18,7 +18,6 @@ group def Cart_system():
 
     m1 : M1(brain, sensors_and_cameras);
     m2 : M2(brain);
-    m6 : M6(brain, bat);
     m7 : M7(brain, bat);
     l4 : L4(brain);
     l5 : L5(brain, bat);
