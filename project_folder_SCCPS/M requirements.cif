@@ -1,4 +1,4 @@
-import "Cart model/Cart brain.cif", "Cart model/sensor.cif", "Cart model/Battery.cif";
+import "Cart model/Cart brain.cif", "Cart model/sensor.cif", "Cart model/Battery.cif", "Cart model/Lifting_mechanism.cif", "Cart model/DC motor.cif";
 
 group def M1(Cart_brain brain;  Sensor_and_cameras sensors_and_cameras):
 
@@ -14,75 +14,15 @@ group def M1(Cart_brain brain;  Sensor_and_cameras sensors_and_cameras):
 
 end
 
-requirement def M2(Cart_brain brain):
+group def M2(Cart_brain brain; DC_motor motor; Lifting_mechanism lift):
 
-    location idle: initial; marked;
-        edge brain.start_fw, brain.start_l, brain.start_r goto moving; // Cart is moving
-        edge brain.start_lifting, brain.start_lowering goto using_lifter; // Cart using lifting mechanism
-    location using_lifter:
-        edge brain.stop_lifting, brain.stop_lowering goto idle; // Lifting mechanism no longer in use
-        edge brain.start_lifting, brain.start_lowering;
-    location moving:
-        edge brain.stop_fw, brain.stop_l, brain.stop_r goto idle; // stops moving
-        edge brain.start_fw, brain.start_l, brain.start_r;
-end
-//
-// requirement def M3(Cart_brain brain):
-//
-//     location not_moveing:
-//         initial;marked;
-//         edge brain.on_barcode_location goto reached_new_barcode;
-//         edge brain.infrared_stimulate,brain.touch_stimulate goto not_moveing;
-//     location reached_new_barcode:
-//         edge brain.on_barcode_location goto not_moveing;
-// end
-//
-// requirement def M4(Cart_brain brain):
-//     location infrared_undet:
-//         initial; marked;
-//         edge brain.infrared_stimulate goto infrared_det;
-//         edge brain.start_fw goto infrared_undet;
-//        // edge start_forward goto infrared_undet;
-//
-//     location infrared_det:
-//         marked;
-//         edge brain.infrared_unstimulate goto infrared_undet;
-// end
-//
-// requirement def M5(Cart_brain brain):
-//     location touch_undet:
-//         initial; marked;
-//         edge brain.touch_stimulate goto touch_det;
-//         edge brain.start_fw, brain.start_l,brain.start_r goto touch_undet;
-//        // edge start_forward goto infrared_undet;
-//
-//     location touch_det:
-//         marked;
-//         edge brain.touch_unstimulate goto touch_undet;
-// end
+    requirement brain.start_l needs not(lift.lifting or lift.lowering);
+    requirement brain.start_r needs not(lift.lifting or lift.lowering);
+    requirement brain.start_fw needs not(lift.lifting or lift.lowering);
 
+    requirement brain.start_lifting needs motor.keep_track_of_direction.idle;
+    requirement brain.start_lowering needs motor.keep_track_of_direction.idle;
 
-// requirement def M6(Cart_brain cart; Battery battery):
-//     location resources_available:
-//         initial;
-//         marked;
-//         edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when (battery.b <= 5) goto immobilized;
-//         edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when (battery.b > 5) goto executing; // executing is moving on M6 automaton
-//     location executing:
-//         edge cart.stop_l, cart.stop_r, cart.stop_fw, cart.stop_lifting, cart.stop_lowering goto resources_available;
-//         edge cart.start_lifting, cart.start_lowering, cart.start_fw, cart.start_r, cart.start_l;
-//     location immobilized:
-//         edge cart.replace_battery goto resources_available;
-// end
-
-requirement def M6(Cart_brain cart; Battery battery):
-    location resources_available:
-        initial;
-        marked;
-        edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when not (battery.CriticaltoEmpty) ;
-        edge cart.start_fw, cart.start_l, cart.start_r, cart.start_lifting, cart.start_lowering when battery.CriticaltoEmpty goto immobilized ;
-    location immobilized:
-        edge cart.replace_battery goto resources_available;
 end
 
 
