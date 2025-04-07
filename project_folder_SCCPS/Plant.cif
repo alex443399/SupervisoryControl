@@ -17,7 +17,7 @@ group def Cart_system():
     order_req: order_of_requests(brain, bat);
 
     m1 : M1(brain, sensors_and_cameras);
-    m2 : M2(brain);
+    m2 : M2(brain, motor, lift);
     m7 : M7(brain, bat);
     l4 : L4(brain);
     l5 : L5(brain, bat);
