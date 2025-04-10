@@ -30,7 +30,7 @@ Cart2 : Cart_system();
 
 
 
-plant resource_allocator:
+plant AA_resource_allocator:
     controllable process;
     disc int[0..2] q = 0;
 
