@@ -34,39 +34,40 @@ end
 requirement def order_of_requests(Cart_brain brain; Battery bat):
     location get_rack_loc:initial;marked;
         edge brain.denied_storage, brain.request_storage when bat.b >10  goto get_rack_loc;
-        edge brain.denied_storage, brain.request_storage, brain.request_charging when bat.b <=10 goto get_charging_loc;
-        edge brain.granted_storage goto move_to_rack;
+        edge brain.denied_storage   when bat.b <=10 goto get_charging_loc;
+        edge brain.request_charging goto get_charging_loc;
+        edge brain.granted_storage  goto move_to_rack;
     location move_to_rack:
-        edge brain.request_picking goto get_picking_loc;
+        edge brain.request_picking  goto get_picking_loc;
         edge brain.request_charging goto get_charging_loc;
     location get_picking_loc:
-        edge brain.granted_picking goto move_to_picking;
-        edge brain.denied_picking when bat.b >10 goto get_drop_loc  ;
-        edge brain.denied_picking when bat.b<=10 goto get_charging_loc  ;
+        edge brain.granted_picking  goto move_to_picking;
+        edge brain.denied_picking   when bat.b >10 goto get_drop_loc  ;
+        edge brain.denied_picking   when bat.b<=10 goto get_charging_loc  ;
         edge brain.request_charging goto get_charging_loc;
     location move_to_picking:
-        edge brain.start_picking goto is_picking;
+        edge brain.start_picking    goto is_picking;
         edge brain.request_charging goto get_charging_loc;
     location is_picking:
-        edge brain.stop_picking goto done_picking;
+        edge brain.stop_picking     goto done_picking;
         edge brain.request_charging goto get_charging_loc;
     location done_picking:
-        edge brain.request_picking goto get_picking_loc;
+        edge brain.request_picking  goto get_picking_loc;
         edge brain.request_charging goto get_charging_loc;
     location get_charging_loc:
         edge brain.denied_charging, brain.request_charging;
         edge brain.granted_charging goto move_to_charging;
     location move_to_charging:
-        edge brain.start_charging goto is_charging;
+        edge brain.start_charging   goto is_charging;
     location is_charging:
-        edge brain.stop_charging goto get_rack_loc;
+        edge brain.stop_charging    goto get_rack_loc;
     location get_drop_loc:
-        edge brain.granted_storage goto move_to_drop;
+        edge brain.granted_storage  goto move_to_drop;
         edge brain.request_charging goto get_charging_loc;
         edge brain.request_storage, brain.denied_storage when bat.b >10;
-        edge brain.request_storage, brain.denied_storage when bat.b<=10 goto get_charging_loc;
+        edge brain.denied_storage   when bat.b<=10 goto get_charging_loc;
     location move_to_drop:
-        edge brain.request_storage goto get_rack_loc;
+        edge brain.request_storage  when bat.b>10  goto get_rack_loc;
         edge brain.request_charging goto get_charging_loc;
 end
 
