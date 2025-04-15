@@ -6,11 +6,9 @@ requirement def M0(Cart_brain brain):
         marked;
         edge brain.done_handling_interruption goto Idle;
         edge brain.start_fw goto moving_but_has_not_left_barcode;
-
     location moving_but_has_not_left_barcode:
         edge brain.done_handling_interruption;
         edge brain.off_barcode_location goto left_barcode_processing;
-
     location left_barcode_processing:
         edge brain.done_handling_interruption goto in_between_barcodes;
     location in_between_barcodes:
@@ -20,4 +18,74 @@ requirement def M0(Cart_brain brain):
         edge brain.stop_fw goto Stopped_moving;
     location Stopped_moving:
         edge brain.done_handling_interruption goto Idle;
+end
+
+group def M4b(Cart_brain brain): // infrared-proximity -> E_stop
+    requirement M4_aux_1:
+        location Idle:
+            initial;
+            marked;
+            edge brain.add_emergency, brain.fix_emergency goto Idle;
+            edge brain.infrared_stimulate goto Processing;
+        location Processing:
+            edge brain.add_emergency goto EmergencyAck; //emergency acknowledged
+        location EmergencyAck:
+            edge brain.done_handling_interruption goto Processed;
+        location Processed:
+            edge brain.add_emergency, brain.fix_emergency goto Processed;
+            edge brain.infrared_unstimulate goto Resolved;
+        location Resolved:
+            edge brain.fix_emergency goto EmergencyLifted;
+        location EmergencyLifted:
+            edge brain.done_handling_interruption goto Idle;
+    end
+
+    requirement M4_aux_2:
+        location Idle:
+            initial;
+            marked;
+            edge brain.infrared_stimulate when (brain.Emergency_handler.E_count >= 1) goto PriorEmergency;
+            edge brain.infrared_stimulate when (brain.Emergency_handler.E_count < 1) goto NewEmergency;
+        location PriorEmergency:
+            edge brain.done_handling_interruption goto Idle;
+        location NewEmergency:
+            edge brain.activate_emergency_breaks goto Stopped;
+        location Stopped:
+            edge brain.done_handling_interruption goto Idle;
+    end
+end
+
+group def M5(Cart_brain brain): // touch -> E_stop
+    requirement M5_aux_1:
+        location Idle:
+            initial;
+            marked;
+            edge brain.add_emergency, brain.fix_emergency goto Idle;
+            edge brain.touch_stimulate goto Processing;
+        location Processing:
+            edge brain.add_emergency goto EmergencyAck; //emergency acknowledged
+        location EmergencyAck:
+            edge brain.done_handling_interruption goto Processed;
+        location Processed:
+            edge brain.add_emergency, brain.fix_emergency goto Processed;
+            edge brain.touch_unstimulate goto Resolved;
+        location Resolved:
+            edge brain.fix_emergency goto EmergencyLifted;
+        location EmergencyLifted:
+            edge brain.done_handling_interruption goto Idle;
+    end
+
+    requirement M5_aux_2:
+        location Idle:
+            initial;
+            marked;
+            edge brain.touch_stimulate when (brain.Emergency_handler.E_count >= 1) goto PriorEmergency;
+            edge brain.touch_stimulate when (brain.Emergency_handler.E_count < 1) goto NewEmergency;
+        location PriorEmergency:
+            edge brain.done_handling_interruption goto Idle;
+        location NewEmergency:
+            edge brain.activate_emergency_breaks goto Stopped;
+        location Stopped:
+            edge brain.done_handling_interruption goto Idle;
+    end
 end
