@@ -6,14 +6,18 @@ requirement def M0(Cart_brain brain):
         marked;
         edge brain.done_handling_interruption goto Idle;
         edge brain.start_fw goto moving_but_has_not_left_barcode;
+
     location moving_but_has_not_left_barcode:
         edge brain.done_handling_interruption;
         edge brain.off_barcode_location goto left_barcode_processing;
+
     location left_barcode_processing:
         edge brain.done_handling_interruption goto in_between_barcodes;
+
     location in_between_barcodes:
         edge brain.done_handling_interruption;
         edge brain.on_barcode_location goto reached_new_barcode;
+
     location reached_new_barcode:
         edge brain.stop_fw goto Stopped_moving;
     location Stopped_moving:
@@ -84,4 +88,20 @@ group def M6(Cart_brain brain; Battery bat; DC_motor motor): // touch -> E_stop
         location EmergencyLifted:
             edge brain.done_handling_interruption goto Idle;
     end
+end
+
+group def QOL(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor; Battery bat):
+    alg bool no_emergency_situation = sensors.infrared_sensor.inactive and sensors.touch_sensor.inactive and
+        not(bat.battery_level.battery_empty or bat.battery_level.battery_critical);
+
+    requirement brain.start_fw needs no_emergency_situation;
+    requirement brain.start_r needs no_emergency_situation;
+    requirement brain.start_l needs no_emergency_situation;
+
+    requirement brain.start_fw needs no_emergency_situation;
+    requirement brain.start_r needs no_emergency_situation;
+    requirement brain.start_l needs no_emergency_situation;
+
+    requirement brain.replace_battery needs bat.battery_level.battery_empty or bat.battery_level.battery_critical;
+
 end
