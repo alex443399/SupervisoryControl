@@ -1,4 +1,4 @@
-import "Cart model/Cart brain.cif", "Cart model/sensor.cif", "Cart model/DC motor.cif"; //, "Cart model/Battery.cif";
+import "Cart model/Cart brain.cif", "Cart model/sensor.cif", "Cart model/DC motor.cif", "Cart model/Battery.cif"; //, "Cart model/Battery.cif";
 
 requirement def M0(Cart_brain brain):
     location Idle:
@@ -42,22 +42,9 @@ group def M4b(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // 
 
     requirement brain.done_handling_interruption needs (motor.emergency_breaks.ebreaks_on) or sensors.infrared_sensor.inactive;
     requirement brain.deactivate_emergency_breaks needs sensors.infrared_sensor.inactive;
-    requirement brain.start_fw needs sensors.infrared_sensor.inactive;
+    requirement brain.start_fw needs sensors.infrared_sensor.inactive; // Optional, technically it is allowed, it doesn't cause problems, but this is nicer
     requirement brain.start_l needs sensors.infrared_sensor.inactive;
     requirement brain.start_r needs sensors.infrared_sensor.inactive;
-//     requirement M4_aux_2:
-//         location Idle:
-//             initial;
-//             marked;
-//             edge brain.infrared_stimulate when (brain.Emergency_handler.E_count >= 1) goto PriorEmergency;
-//             edge brain.infrared_stimulate when (brain.Emergency_handler.E_count < 1) goto NewEmergency;
-//         location PriorEmergency:
-//             edge brain.done_handling_interruption goto Idle;
-//         location NewEmergency:
-//             edge brain.activate_emergency_breaks goto Stopped;
-//         location Stopped:
-//             edge brain.done_handling_interruption goto Idle;
-//     end
 end
 
 group def M5(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // touch -> E_stop
@@ -85,18 +72,34 @@ group def M5(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // t
     requirement brain.start_fw needs sensors.touch_sensor.inactive;
     requirement brain.start_r needs sensors.touch_sensor.inactive;
     requirement brain.start_r needs sensors.touch_sensor.inactive;
-//  and brain.Emergency_handler.Emergency
-//     requirement M5_aux_2:
-//         location Idle:
-//             initial;
-//             marked;
-//             edge brain.touch_stimulate when (brain.Emergency_handler.E_count >= 1) goto PriorEmergency;
-//             edge brain.touch_stimulate when (brain.Emergency_handler.E_count < 1) goto NewEmergency;
-//         location PriorEmergency:
-//             edge brain.done_handling_interruption goto Idle;
-//         location NewEmergency:
-//             edge brain.activate_emergency_breaks goto Stopped;
-//         location Stopped:
-//             edge brain.done_handling_interruption goto Idle;
-//     end
+end
+
+
+group def M6(Cart_brain brain; Battery bat; DC_motor motor): // touch -> E_stop
+    requirement M5_aux_1:
+        alg bool battery_needs_changing = bat.battery_level.battery_empty or bat.battery_level.battery_critical;
+        location Idle:
+            initial;
+            marked;
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption goto Idle;
+            edge brain.discharge goto Processing;
+        location Processing:
+            edge brain.add_emergency when battery_needs_changing goto EmergencyAck; //emergency acknowledged
+            edge brain.done_handling_interruption when not(battery_needs_changing) goto Idle;
+        location EmergencyAck:
+            edge brain.done_handling_interruption goto Battery_is_in_need_of_change;
+        location Battery_is_in_need_of_change:
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption;
+            edge brain.replace_battery goto Resolved;
+        location Resolved:
+            edge brain.fix_emergency goto EmergencyLifted;
+        location EmergencyLifted:
+            edge brain.done_handling_interruption goto Idle;
+    end
+
+    requirement brain.done_handling_interruption needs (motor.emergency_breaks.ebreaks_on) or not(bat.battery_level.battery_empty or bat.battery_level.battery_critical);
+    requirement brain.deactivate_emergency_breaks needs M5_aux_1.Idle or M5_aux_1.Resolved;
+//     requirement brain.start_fw needs sensors.touch_sensor.inactive;
+//     requirement brain.start_r needs sensors.touch_sensor.inactive;
+//     requirement brain.start_r needs sensors.touch_sensor.inactive;
 end
