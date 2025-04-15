@@ -1,32 +1,74 @@
-controllable plan_standby, start_planning;
-uncontrollable done_planning;
+import "Cart model/Cart brain.cif";
 
-controllable executing_on_standby, start_executing;
-controllable finish_executing, abort;
 
-plant planning_handler:
-    location no_plan: initial;
-        edge plan_standby goto Standby_Plan;
-    location Standby_Plan:
-        edge start_planning goto Planning;
-    location Planning:
-        edge done_planning goto new_plan;
-    location new_plan: marked;
-        edge plan_standby goto Standby_Plan;
+
+group def PathPlanner(Cart_brain brain):
+
+    controllable plan_standby, start_planning;
+    uncontrollable done_planning;
+
+    controllable executing_on_standby, start_executing; // get the execution on standby and then start
+    controllable finish_executing; // This means we are done executing, for whatever reason, and return to idle
+    controllable abort, do_not_abort; // We chose if we want to abort path
+    uncontrollable final_location, not_final_location; // When we check if we reached the final location,
+    // we do not control if we reached or not, hence uncontrollable
+
+
+    plant planning_handler:
+        location no_plan: initial;
+            edge plan_standby goto Standby_Plan;
+        location Standby_Plan:
+            edge start_planning goto Planning;
+        location Planning:
+            edge done_planning goto new_plan;
+        location new_plan: marked;
+            edge plan_standby goto Standby_Plan;
+    end
+
+    plant execution_handler:
+        // we go on standby and then start
+        location idle: initial; marked;
+            edge executing_on_standby goto Standby_execution;
+        location Standby_execution:
+            edge start_executing goto Abort_Prematurely;
+        // We check the initial barcode, as well as if we want to abort immidiately
+        location Abort_Prematurely:
+            edge abort, finish_executing goto FinishedPathing;
+            edge do_not_abort goto Check_initial_barcode;
+        location Check_initial_barcode:
+            edge final_location goto FinishedPathing;
+            edge not_final_location goto Pathing;
+        // Every time we see a barcode we consider aborting and check if we reached the final destination
+        location Pathing:
+            edge brain.on_barcode_location goto Abort;
+        location Abort:
+            edge abort goto finishProcessingInterruption;
+            edge do_not_abort goto Check_location;
+        location Check_location:
+            edge final_location goto finishProcessingInterruption;
+            edge not_final_location goto second_finishProcessingInterruption;
+        // We synchronize with the interruption handler
+        location second_finishProcessingInterruption:
+            edge brain.done_handling_interruption goto Pathing;
+        location finishProcessingInterruption:
+            edge brain.done_handling_interruption goto FinishedPathing;
+        // We broadcast to everyone that we are done with the execution
+        location FinishedPathing:
+            edge finish_executing goto idle;
+    end
+
 end
 
-plant execution_handler:
-    location idle: initial; marked;
-        edge executing_on_standby goto Standby_execution;
-    location Standby_execution:
-        edge start_executing goto Executing_path;
-    location Executing_path:
-        edge abort, finish_executing goto idle;
+group def P1(PathPlanner pp): // requirement P1 : start_planning needs execution_handler.idle;
+    // This is a convention choice, we could include Standby_execution, because it is technically not executing.
+    // However, if we are on standby we want to be able to start executing right away. If we are on standby and we start
+    // planning then we need to wait to start executing, so it does not work for our application
+    requirement pp.start_planning needs pp.execution_handler.idle;
+end
+
+group def P2(PathPlanner pp): // requirement P2 : start_executing needs planning_handler.new_plan;
+    requirement pp.start_executing needs pp.planning_handler.new_plan;
 end
 
 
-requirement P1 : start_planning needs execution_handler.idle;
-// This is a convention choice, we could include Standby_execution, because it is technically not executing.
-// However, if we are on standby we want to be able to start executing right away. If we are on standby and we start
-// planning then we need to wait to start executing, so it does not work for our application
-requirement P2 : start_executing needs planning_handler.new_plan;
+

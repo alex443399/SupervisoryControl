@@ -2,17 +2,22 @@ import "Cart model/Cart brain.cif", "Cart model/DC motor.cif";
 import "Cart model/sensor.cif";
 import "Cart model/Battery.cif";
 
-
 import "M requirements.cif";
+import "PathPlanner.cif";
 
 group def Cart_system():
     brain : Cart_brain();
     motor : DC_motor(brain);
     sensors_and_cameras : Sensor_and_cameras(brain);
 //     battery : Battery(brain);
+
+    pp : PathPlanner(brain);
+
     m0_req : M0(brain);
     m4b_req : M4b(brain, sensors_and_cameras, motor);
     m5_req : M5(brain, sensors_and_cameras, motor);
+    p1_req : P1(pp);
+    p2_req : P2(pp);
 
 end
 
