@@ -39,11 +39,12 @@ group def Cart_brain():
     controllable add_emergency, fix_emergency;
 
     plant Emergency_handler:
-        disc int[0..3] E_count = 0;// Emergency counter
+        disc int[0..max_emergencies] E_count = 0;// Emergency counter
         location No_emergency: initial; marked;
             edge add_emergency do E_count := E_count + 1 goto Emergency;
         location Emergency:
-            edge add_emergency do E_count := E_count + 1;
+            edge add_emergency when E_count < max_emergencies
+                do E_count := E_count + 1;
             edge fix_emergency when E_count > 1
                 do E_count := E_count - 1;
             edge fix_emergency when E_count = 1
@@ -55,10 +56,11 @@ group def Cart_brain():
     controllable done_handling_interruption;
     plant interrumption_handler:
         location Listening:initial; marked;
-            edge on_barcode_location, off_barcode_location,
-                touch_stimulate,touch_unstimulate,
-                infrared_stimulate,infrared_unstimulate,
-                stop_l, stop_r
+            edge
+                on_barcode_location, off_barcode_location, // barcode location
+                touch_stimulate,touch_unstimulate, // touch
+                infrared_stimulate,infrared_unstimulate, // IR
+                stop_l, stop_r // DC motor
                 goto Handling_interruption;
         location Handling_interruption:
             edge done_handling_interruption goto Listening;
