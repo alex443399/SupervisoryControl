@@ -1,0 +1,32 @@
+controllable plan_standby, start_planning;
+uncontrollable done_planning;
+
+controllable executing_on_standby, start_executing;
+controllable finish_executing, abort;
+
+plant planning_handler:
+    location no_plan: initial;
+        edge plan_standby goto Standby_Plan;
+    location Standby_Plan:
+        edge start_planning goto Planning;
+    location Planning:
+        edge done_planning goto new_plan;
+    location new_plan: marked;
+        edge plan_standby goto Standby_Plan;
+end
+
+plant execution_handler:
+    location idle: initial; marked;
+        edge executing_on_standby goto Standby_execution;
+    location Standby_execution:
+        edge start_executing goto Executing_path;
+    location Executing_path:
+        edge abort, finish_executing goto idle;
+end
+
+
+requirement P1 : start_planning needs execution_handler.idle;
+// This is a convention choice, we could include Standby_execution, because it is technically not executing.
+// However, if we are on standby we want to be able to start executing right away. If we are on standby and we start
+// planning then we need to wait to start executing, so it does not work for our application
+requirement P2 : start_executing needs planning_handler.new_plan;
