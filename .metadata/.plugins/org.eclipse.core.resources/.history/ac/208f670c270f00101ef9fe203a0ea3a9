@@ -1,7 +1,0 @@
-import "Cart model/Cart brain.cif", "Cart model/Location_barcode_sensor";
-
-group def M1(Cart_brain brain; Location_barcode_sensor location_barcode_sensor):
-
-
-
-end
