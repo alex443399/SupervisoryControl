@@ -39,21 +39,24 @@ group def PathPlanner(Cart_brain brain):
         location idle: initial; marked;
             edge executing_on_standby goto Standby_execution;
 
-            edge brain.on_barcode_location; // Maybe we are moving but we are not executing a specific path
+            edge brain.on_barcode_location, brain.done_handling_interruption; // Maybe we are moving but we are not executing a specific path
         location Standby_execution:
             edge start_executing goto Abort_Prematurely;
-             edge brain.on_barcode_location; // Maybe we are moving but we are not executing a specific path
+            edge brain.on_barcode_location, brain.done_handling_interruption; // Maybe we are moving but we are not executing a specific path
 
         // We check the initial barcode, as well as if we want to abort immidiately
         location Abort_Prematurely:
             edge abort, finish_executing goto FinishedPathing;
             edge do_not_abort goto Check_initial_barcode;
+            edge brain.done_handling_interruption;
         location Check_initial_barcode:
             edge final_location goto FinishedPathing;
             edge not_final_location goto Pathing;
+            edge brain.done_handling_interruption;
         // Every time we see a barcode we consider aborting and check if we reached the final destination
         location Pathing:
             edge brain.on_barcode_location goto Abort;
+            edge brain.done_handling_interruption;
         location Abort:
             edge abort goto finishProcessingInterruption;
             edge do_not_abort goto Check_location;
