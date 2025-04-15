@@ -1,4 +1,4 @@
-import "Cart model/Cart brain.cif", "Cart model/sensor.cif";//, "Cart model/Battery.cif";
+import "Cart model/Cart brain.cif", "Cart model/sensor.cif", "Cart model/DC motor.cif"; //, "Cart model/Battery.cif";
 
 requirement def M0(Cart_brain brain):
     location Idle:
@@ -20,7 +20,7 @@ requirement def M0(Cart_brain brain):
         edge brain.done_handling_interruption goto Idle;
 end
 
-group def M4b(Cart_brain brain): // infrared-proximity -> E_stop
+group def M4b(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // infrared-proximity -> E_stop
     requirement M4_aux_1:
         location Idle:
             initial;
@@ -40,22 +40,24 @@ group def M4b(Cart_brain brain): // infrared-proximity -> E_stop
             edge brain.done_handling_interruption goto Idle;
     end
 
-    requirement M4_aux_2:
-        location Idle:
-            initial;
-            marked;
-            edge brain.infrared_stimulate when (brain.Emergency_handler.E_count >= 1) goto PriorEmergency;
-            edge brain.infrared_stimulate when (brain.Emergency_handler.E_count < 1) goto NewEmergency;
-        location PriorEmergency:
-            edge brain.done_handling_interruption goto Idle;
-        location NewEmergency:
-            edge brain.activate_emergency_breaks goto Stopped;
-        location Stopped:
-            edge brain.done_handling_interruption goto Idle;
-    end
+    requirement brain.done_handling_interruption needs motor.emergency_breaks.ebreaks_on or sensors.infrared_sensor.inactive;
+
+//     requirement M4_aux_2:
+//         location Idle:
+//             initial;
+//             marked;
+//             edge brain.infrared_stimulate when (brain.Emergency_handler.E_count >= 1) goto PriorEmergency;
+//             edge brain.infrared_stimulate when (brain.Emergency_handler.E_count < 1) goto NewEmergency;
+//         location PriorEmergency:
+//             edge brain.done_handling_interruption goto Idle;
+//         location NewEmergency:
+//             edge brain.activate_emergency_breaks goto Stopped;
+//         location Stopped:
+//             edge brain.done_handling_interruption goto Idle;
+//     end
 end
 
-group def M5(Cart_brain brain): // touch -> E_stop
+group def M5(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // touch -> E_stop
     requirement M5_aux_1:
         location Idle:
             initial;
@@ -75,17 +77,19 @@ group def M5(Cart_brain brain): // touch -> E_stop
             edge brain.done_handling_interruption goto Idle;
     end
 
-    requirement M5_aux_2:
-        location Idle:
-            initial;
-            marked;
-            edge brain.touch_stimulate when (brain.Emergency_handler.E_count >= 1) goto PriorEmergency;
-            edge brain.touch_stimulate when (brain.Emergency_handler.E_count < 1) goto NewEmergency;
-        location PriorEmergency:
-            edge brain.done_handling_interruption goto Idle;
-        location NewEmergency:
-            edge brain.activate_emergency_breaks goto Stopped;
-        location Stopped:
-            edge brain.done_handling_interruption goto Idle;
-    end
+    requirement brain.done_handling_interruption needs motor.emergency_breaks.ebreaks_on or sensors.touch_sensor.inactive;
+
+//     requirement M5_aux_2:
+//         location Idle:
+//             initial;
+//             marked;
+//             edge brain.touch_stimulate when (brain.Emergency_handler.E_count >= 1) goto PriorEmergency;
+//             edge brain.touch_stimulate when (brain.Emergency_handler.E_count < 1) goto NewEmergency;
+//         location PriorEmergency:
+//             edge brain.done_handling_interruption goto Idle;
+//         location NewEmergency:
+//             edge brain.activate_emergency_breaks goto Stopped;
+//         location Stopped:
+//             edge brain.done_handling_interruption goto Idle;
+//     end
 end
