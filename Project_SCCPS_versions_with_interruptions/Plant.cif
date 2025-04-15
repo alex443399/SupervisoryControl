@@ -9,8 +9,11 @@ group def Cart_system():
     brain : Cart_brain();
     motor : DC_motor(brain);
     sensors_and_cameras : Sensor_and_cameras(brain);
-    battery : Battery(brain);
+//     battery : Battery(brain);
     m0_req : M0(brain);
+    m4b_req : M4b(brain, sensors_and_cameras, motor);
+    m5_req : M5(brain, sensors_and_cameras, motor);
+
 end
 
 cart1 : Cart_system();

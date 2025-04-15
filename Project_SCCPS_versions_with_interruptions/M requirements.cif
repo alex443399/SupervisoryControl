@@ -25,14 +25,14 @@ group def M4b(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // 
         location Idle:
             initial;
             marked;
-            edge brain.add_emergency, brain.fix_emergency goto Idle;
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption;
             edge brain.infrared_stimulate goto Processing;
         location Processing:
             edge brain.add_emergency goto EmergencyAck; //emergency acknowledged
         location EmergencyAck:
             edge brain.done_handling_interruption goto Processed;
         location Processed:
-            edge brain.add_emergency, brain.fix_emergency goto Processed;
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption;
             edge brain.infrared_unstimulate goto Resolved;
         location Resolved:
             edge brain.fix_emergency goto EmergencyLifted;
@@ -40,7 +40,7 @@ group def M4b(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // 
             edge brain.done_handling_interruption goto Idle;
     end
 
-    requirement brain.done_handling_interruption needs motor.emergency_breaks.ebreaks_on or sensors.infrared_sensor.inactive;
+    requirement brain.done_handling_interruption needs (motor.emergency_breaks.ebreaks_on) or sensors.infrared_sensor.inactive;
 
 //     requirement M4_aux_2:
 //         location Idle:
@@ -62,14 +62,14 @@ group def M5(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // t
         location Idle:
             initial;
             marked;
-            edge brain.add_emergency, brain.fix_emergency goto Idle;
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption goto Idle;
             edge brain.touch_stimulate goto Processing;
         location Processing:
             edge brain.add_emergency goto EmergencyAck; //emergency acknowledged
         location EmergencyAck:
             edge brain.done_handling_interruption goto Processed;
         location Processed:
-            edge brain.add_emergency, brain.fix_emergency goto Processed;
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption goto Processed;
             edge brain.touch_unstimulate goto Resolved;
         location Resolved:
             edge brain.fix_emergency goto EmergencyLifted;
@@ -77,8 +77,8 @@ group def M5(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // t
             edge brain.done_handling_interruption goto Idle;
     end
 
-    requirement brain.done_handling_interruption needs motor.emergency_breaks.ebreaks_on or sensors.touch_sensor.inactive;
-
+    requirement brain.done_handling_interruption needs (motor.emergency_breaks.ebreaks_on) or sensors.touch_sensor.inactive;
+//  and brain.Emergency_handler.Emergency
 //     requirement M5_aux_2:
 //         location Idle:
 //             initial;

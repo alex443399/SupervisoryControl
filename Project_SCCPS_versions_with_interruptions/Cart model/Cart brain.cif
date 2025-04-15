@@ -65,6 +65,7 @@ group def Cart_brain():
                 goto Handling_interruption;
         location Handling_interruption:
             edge done_handling_interruption goto Listening;
+            edge add_emergency, fix_emergency;
     end
 
 
