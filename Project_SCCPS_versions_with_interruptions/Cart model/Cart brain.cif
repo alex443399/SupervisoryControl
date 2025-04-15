@@ -1,0 +1,67 @@
+group def Cart_brain():
+    // Moving variables
+    controllable start_fw, start_l, start_r, stop_fw;
+    uncontrollable stop_l, stop_r;
+
+    // Lifiting event (not yet)
+//     controllable start_lifting, start_lowering, interrupt_lift;
+//     uncontrollable stop_lifting, stop_lowering;
+
+    // Barcode events
+    uncontrollable on_barcode_location, off_barcode_location;
+    uncontrollable on_barcode_product, off_barcode_product;
+
+    // Communicator events (not yet)
+//     controllable request_storage, request_picking, request_charging;
+//     uncontrollable granted_storage, granted_picking, granted_charging;
+//     uncontrollable denied_storage, denied_picking, denied_charging;
+//     event touch_stimulate, infrared_stimulate, scan_production_stack_barcode;
+
+    // battery events (not yet)
+//     controllable start_charging, stop_charging;
+//     uncontrollable replace_battery, battery_critical;
+
+    // picking events (not yet)
+//     controllable start_picking, stop_picking;
+
+   // Sensors:
+    uncontrollable touch_stimulate, infrared_stimulate;
+    uncontrollable infrared_unstimulate, touch_unstimulate;
+
+    // path planner events (not yet)
+//     uncontrollable done_planning, final_location, not_final_location;
+//     controllable start_planning, abort_route, do_not_abort, start_executing;
+
+    // Emergency handling
+    const int max_emergencies = 3; // for the sake of simplicity we chose 3, since that is what we will use, however we
+    // could make at an arbitrarily large integer
+    controllable add_emergency, fix_emergency;
+
+    plant Emergency_handler:
+        disc int[0..3] E_count = 0;// Emergency counter
+        location No_emergency: initial; marked;
+            edge add_emergency do E_count := E_count + 1 goto Emergency;
+        location Emergency:
+            edge add_emergency do E_count := E_count + 1;
+            edge fix_emergency when E_count > 1
+                do E_count := E_count - 1;
+            edge fix_emergency when E_count = 1
+                do E_count := E_count - 1 goto No_emergency;
+    end
+
+
+    // Interruption handling
+    controllable done_handling_interruption;
+    plant interrumption_handler:
+        location Listening:
+            edge on_barcode_location, off_barcode_location,
+                touch_stimulate,touch_unstimulate,
+                infrared_stimulate,infrared_unstimulate,
+                stop_l, stop_r
+                goto Handling_interruption;
+        location Handling_interruption:
+            edge done_handling_interruption goto Listening;
+    end
+
+
+end
