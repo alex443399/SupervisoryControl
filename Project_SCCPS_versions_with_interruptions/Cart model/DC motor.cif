@@ -32,4 +32,5 @@ group def DC_motor(Cart_brain brain):
         location ebreaks_on:
             edge brain.deactivate_emergency_breaks goto ebreaks_off;
     end
+
 end

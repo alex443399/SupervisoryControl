@@ -9,13 +9,14 @@ group def Cart_system():
     brain : Cart_brain();
     motor : DC_motor(brain);
     sensors_and_cameras : Sensor_and_cameras(brain);
-//     battery : Battery(brain);
+    battery : Battery(brain, motor);
 
     pp : PathPlanner(brain);
 
     m0_req : M0(brain);
     m4b_req : M4b(brain, sensors_and_cameras, motor);
     m5_req : M5(brain, sensors_and_cameras, motor);
+
     p1_req : P1(pp);
     p2_req : P2(pp);
 
