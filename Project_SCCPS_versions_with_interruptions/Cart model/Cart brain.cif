@@ -59,7 +59,7 @@ group def Cart_brain():
                 on_barcode_location, off_barcode_location, // barcode location
                 touch_stimulate,touch_unstimulate, // touch
                 infrared_stimulate,infrared_unstimulate, // IR
-                stop_l, stop_r, // DC motor
+//                 stop_l, stop_r, // DC motor, for simplicity
                 charge, discharge // battery
                 goto Handling_interruption;
         location Handling_interruption:
