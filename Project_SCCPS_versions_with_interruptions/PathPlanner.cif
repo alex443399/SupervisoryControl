@@ -1,4 +1,4 @@
-import "Cart model/Cart brain.cif";
+import "Cart model/Cart brain.cif", "Cart model/Battery.cif";
 
 
 
@@ -25,12 +25,25 @@ group def PathPlanner(Cart_brain brain):
             edge plan_standby goto Standby_Plan;
     end
 
+    plant execution_summary:
+        location idle: marked; initial;
+            edge executing_on_standby goto Standby_execution;
+        location Standby_execution:
+            edge start_executing goto Executing;
+        location Executing:
+            edge finish_executing goto idle;
+    end
+
     plant execution_handler:
         // we go on standby and then start
         location idle: initial; marked;
             edge executing_on_standby goto Standby_execution;
+
+            edge brain.on_barcode_location; // Maybe we are moving but we are not executing a specific path
         location Standby_execution:
             edge start_executing goto Abort_Prematurely;
+             edge brain.on_barcode_location; // Maybe we are moving but we are not executing a specific path
+
         // We check the initial barcode, as well as if we want to abort immidiately
         location Abort_Prematurely:
             edge abort, finish_executing goto FinishedPathing;
@@ -59,16 +72,28 @@ group def PathPlanner(Cart_brain brain):
 
 end
 
+group def P0(PathPlanner pp; Cart_brain brain):
+    requirement brain.start_fw needs pp.execution_summary.Executing;
+    requirement brain.start_r needs pp.execution_summary.Executing;
+    requirement brain.start_l needs pp.execution_summary.Executing;
+    requirement brain.stop_fw needs pp.execution_summary.Executing;
+    requirement brain.on_barcode_location needs pp.execution_summary.Executing;
+    requirement brain.off_barcode_location needs pp.execution_summary.Executing;
+end
+
 group def P1(PathPlanner pp): // requirement P1 : start_planning needs execution_handler.idle;
     // This is a convention choice, we could include Standby_execution, because it is technically not executing.
     // However, if we are on standby we want to be able to start executing right away. If we are on standby and we start
     // planning then we need to wait to start executing, so it does not work for our application
-    requirement pp.start_planning needs pp.execution_handler.idle;
+    requirement pp.start_planning needs pp.execution_summary.idle;
 end
 
 group def P2(PathPlanner pp): // requirement P2 : start_executing needs planning_handler.new_plan;
     requirement pp.start_executing needs pp.planning_handler.new_plan;
 end
 
-
+// group def P3(PathPlanner pp; Battery bat):
+    // Also needs information about the target location, for the case where we have low battery, and we are going to charge
+//     requirement pp.do_not_abort needs (bat.battery_level.battery_high or bat.battery_level.battery_full);
+// end
 
