@@ -1,21 +1,23 @@
-import "Cart model/Cart brain.cif", "Cart model/sensor.cif", "Cart model/Battery.cif";
+import "Cart model/Cart brain.cif", "Cart model/sensor.cif";//, "Cart model/Battery.cif";
 
 requirement def M0(Cart_brain brain):
     location Idle:
         initial;
         marked;
-        edge brain.done_interruption goto Idle;
-        edge brain.start_fw goto M1;
-    location M1:
-        edge brain.done_interruption goto M1;
-        edge brain.off_barcode_location goto Processing;
-    location Processing:
-        edge brain.done_interruption goto Processed;
-    location Processed:
-        edge brain.done_interruption goto Processed;
-        edge brain.on_barcode_location goto M2;
-    location M2:
-        edge brain.stop_fw goto Stopped;
-    location Stopped:
-        edge brain.done_interruption goto Idle;
+        edge brain.done_handling_interruption goto Idle;
+        edge brain.start_fw goto moving_but_has_not_left_barcode;
+
+    location moving_but_has_not_left_barcode:
+        edge brain.done_handling_interruption;
+        edge brain.off_barcode_location goto left_barcode_processing;
+
+    location left_barcode_processing:
+        edge brain.done_handling_interruption goto in_between_barcodes;
+    location in_between_barcodes:
+        edge brain.done_handling_interruption;
+        edge brain.on_barcode_location goto reached_new_barcode;
+    location reached_new_barcode:
+        edge brain.stop_fw goto Stopped_moving;
+    location Stopped_moving:
+        edge brain.done_handling_interruption goto Idle;
 end
