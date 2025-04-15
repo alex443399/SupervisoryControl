@@ -1,0 +1,32 @@
+import "Cart brain.cif";
+
+group def Battery(Cart_brain brain):
+
+    plant battery_charging:
+        location not_charging: initial; marked;
+            edge brain.start_charging goto is_charging;
+        location is_charging:
+            edge brain.stop_charging goto not_charging;
+    end
+
+    plant battery_level:
+        location battery_empty:
+            edge brain.charge when battery_charging.is_charging goto battery_critical;
+
+        location battery_critical:
+            edge brain.charge when battery_charging.is_charging goto battery_low;
+            edge brain.discharge when battery_charging.not_charging goto battery_empty;
+
+        location battery_low:
+            edge brain.charge when battery_charging.is_charging goto battery_high;
+            edge brain.discharge when battery_charging.not_charging goto battery_critical;
+
+        location battery_high: marked;
+            edge brain.charge when battery_charging.is_charging goto battery_full;
+            edge brain.discharge when battery_charging.not_charging goto battery_low;
+
+        location battery_full: initial; marked;
+            edge brain.discharge when battery_charging.not_charging goto battery_high;
+    end
+end
+

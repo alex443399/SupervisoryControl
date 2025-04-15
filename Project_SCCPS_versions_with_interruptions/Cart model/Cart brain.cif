@@ -18,9 +18,9 @@ group def Cart_brain():
 //     uncontrollable denied_storage, denied_picking, denied_charging;
 //     event touch_stimulate, infrared_stimulate, scan_production_stack_barcode;
 
-    // battery events (not yet)
-//     controllable start_charging, stop_charging;
-//     uncontrollable replace_battery, battery_critical;
+//     battery events
+    controllable start_charging, stop_charging, replace_battery;
+    uncontrollable charge, discharge;
 
     // picking events (not yet)
 //     controllable start_picking, stop_picking;
@@ -60,7 +60,8 @@ group def Cart_brain():
                 on_barcode_location, off_barcode_location, // barcode location
                 touch_stimulate,touch_unstimulate, // touch
                 infrared_stimulate,infrared_unstimulate, // IR
-                stop_l, stop_r // DC motor
+                stop_l, stop_r, // DC motor
+                charge, discharge // battery
                 goto Handling_interruption;
         location Handling_interruption:
             edge done_handling_interruption goto Listening;
