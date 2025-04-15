@@ -2,6 +2,7 @@ group def Cart_brain():
     // Moving variables
     controllable start_fw, start_l, start_r, stop_fw;
     uncontrollable stop_l, stop_r;
+    controllable activate_emergency_breaks, deactivate_emergency_breaks;
 
     // Lifiting event (not yet)
 //     controllable start_lifting, start_lowering, interrupt_lift;
@@ -9,7 +10,7 @@ group def Cart_brain():
 
     // Barcode events
     uncontrollable on_barcode_location, off_barcode_location;
-    uncontrollable on_barcode_product, off_barcode_product;
+//     uncontrollable on_barcode_product, off_barcode_product;
 
     // Communicator events (not yet)
 //     controllable request_storage, request_picking, request_charging;
@@ -53,7 +54,7 @@ group def Cart_brain():
     // Interruption handling
     controllable done_handling_interruption;
     plant interrumption_handler:
-        location Listening:
+        location Listening:initial; marked;
             edge on_barcode_location, off_barcode_location,
                 touch_stimulate,touch_unstimulate,
                 infrared_stimulate,infrared_unstimulate,

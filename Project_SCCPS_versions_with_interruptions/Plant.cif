@@ -1,0 +1,11 @@
+import "Cart model/Cart brain.cif", "Cart model/DC motor.cif";
+import "Cart model/sensor.cif";
+
+
+group def Cart_system():
+    brain : Cart_brain();
+    motor : DC_motor(brain);
+    sensors_and_cameras : Sensor_and_cameras(brain);
+end
+
+cart1 : Cart_system();

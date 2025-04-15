@@ -1,0 +1,35 @@
+import "Cart brain.cif";
+//stop_fw controllable but stop_l, stop_r uncontorllable
+
+group def DC_motor(Cart_brain brain):
+    // The cart variable is the Cart that the DC_motor belogs to, it is how it gets the shared variables and events
+    plant keep_track_of_direction:
+        location idle:
+            initial; marked;
+            edge brain.start_fw goto moving_forward;
+            edge brain.start_r goto turning_right;
+            edge brain.start_l goto turning_left;
+
+        location moving_forward:
+            edge brain.on_barcode_location, brain.off_barcode_location;
+            edge brain.stop_fw goto idle;
+            // We only see changes in barcode when moving.
+
+        //turning right
+        location turning_right:
+            edge brain.stop_r goto idle;
+
+        location turning_left:
+            edge brain.stop_l goto idle;
+    end
+
+    plant emergency_breaks:
+        location ebreaks_off: initial; marked;
+            edge brain.activate_emergency_breaks goto ebreaks_on;
+            edge brain.start_fw, brain.start_l, brain.start_r;
+            edge brain.stop_fw, brain.stop_l, brain.stop_r;
+            edge brain.on_barcode_location, brain.off_barcode_location;
+        location ebreaks_on:
+            edge brain.deactivate_emergency_breaks goto ebreaks_off;
+    end
+end
