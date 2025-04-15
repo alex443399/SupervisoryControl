@@ -25,12 +25,17 @@ group def DC_motor(Cart_brain brain):
 
     plant emergency_breaks:
         location ebreaks_off: initial; marked;
-            edge brain.activate_emergency_breaks goto ebreaks_on;
+            edge brain.add_emergency goto ebreaks_on;
+
             edge brain.start_fw, brain.start_l, brain.start_r;
             edge brain.stop_fw, brain.stop_l, brain.stop_r;
             edge brain.on_barcode_location, brain.off_barcode_location;
         location ebreaks_on:
-            edge brain.deactivate_emergency_breaks goto ebreaks_off;
+            edge brain.fix_emergency when brain.Emergency_handler.E_count = 1 goto ebreaks_off;
+            // Self loops:
+            edge brain.fix_emergency when brain.Emergency_handler.E_count > 1;
+            edge brain.add_emergency;
+
     end
 
 end

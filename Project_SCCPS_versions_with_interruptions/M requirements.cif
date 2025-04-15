@@ -39,12 +39,6 @@ group def M4b(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // 
         location EmergencyLifted:
             edge brain.done_handling_interruption goto Idle;
     end
-
-    requirement brain.done_handling_interruption needs (motor.emergency_breaks.ebreaks_on) or sensors.infrared_sensor.inactive;
-    requirement brain.deactivate_emergency_breaks needs sensors.infrared_sensor.inactive;
-    requirement brain.start_fw needs sensors.infrared_sensor.inactive; // Optional, technically it is allowed, it doesn't cause problems, but this is nicer
-    requirement brain.start_l needs sensors.infrared_sensor.inactive;
-    requirement brain.start_r needs sensors.infrared_sensor.inactive;
 end
 
 group def M5(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // touch -> E_stop
@@ -66,12 +60,6 @@ group def M5(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // t
         location EmergencyLifted:
             edge brain.done_handling_interruption goto Idle;
     end
-
-    requirement brain.done_handling_interruption needs (motor.emergency_breaks.ebreaks_on) or sensors.touch_sensor.inactive;
-    requirement brain.deactivate_emergency_breaks needs sensors.touch_sensor.inactive;
-    requirement brain.start_fw needs sensors.touch_sensor.inactive;
-    requirement brain.start_r needs sensors.touch_sensor.inactive;
-    requirement brain.start_r needs sensors.touch_sensor.inactive;
 end
 
 
@@ -96,10 +84,4 @@ group def M6(Cart_brain brain; Battery bat; DC_motor motor): // touch -> E_stop
         location EmergencyLifted:
             edge brain.done_handling_interruption goto Idle;
     end
-
-    requirement brain.done_handling_interruption needs (motor.emergency_breaks.ebreaks_on) or not(bat.battery_level.battery_empty or bat.battery_level.battery_critical);
-    requirement brain.deactivate_emergency_breaks needs M5_aux_1.Idle or M5_aux_1.Resolved;
-//     requirement brain.start_fw needs sensors.touch_sensor.inactive;
-//     requirement brain.start_r needs sensors.touch_sensor.inactive;
-//     requirement brain.start_r needs sensors.touch_sensor.inactive;
 end

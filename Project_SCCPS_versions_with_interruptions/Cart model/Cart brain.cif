@@ -2,7 +2,6 @@ group def Cart_brain():
     // Moving variables
     controllable start_fw, start_l, start_r, stop_fw;
     uncontrollable stop_l, stop_r;
-    controllable activate_emergency_breaks, deactivate_emergency_breaks;
 
     // Lifiting event (not yet)
 //     controllable start_lifting, start_lowering, interrupt_lift;
