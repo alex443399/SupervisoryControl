@@ -40,5 +40,41 @@ group def Cart_system():
 
 end
 
-cart1 : Cart_system();
-cart2 : Cart_system();
+Cart1 : Cart_system();
+Cart2 : Cart_system();
+
+plant AA_resource_allocator:
+    controllable process;
+    disc int[0..2*5*3] q = 0; // 2 carts, 5 max requests, 3 types of requests
+
+    location idle:initial;marked;
+        edge Cart1.brain.request_storage, Cart1.brain.request_picking, Cart1.brain.request_charging
+            do q := q + 1 goto choosing_from_Q;
+        edge Cart2.brain.request_storage, Cart2.brain.request_picking, Cart2.brain.request_charging
+            do q := q + 1 goto choosing_from_Q;
+    location choosing_from_Q:
+        edge process goto processing_request;
+
+        edge Cart1.brain.request_storage, Cart1.brain.request_picking, Cart1.brain.request_charging
+            do q := q + 1;
+        edge Cart2.brain.request_storage, Cart2.brain.request_picking, Cart2.brain.request_charging
+            do q := q + 1;
+    location processing_request:
+        edge Cart1.brain.granted_storage, Cart1.brain.granted_picking, Cart1.brain.granted_charging,
+            Cart1.brain.denied_storage, Cart1.brain.denied_picking, Cart1.brain.denied_charging
+            when q>1 do q:=q-1 goto choosing_from_Q;
+        edge Cart1.brain.granted_storage, Cart1.brain.granted_picking, Cart1.brain.granted_charging,
+            Cart1.brain.denied_storage, Cart1.brain.denied_picking, Cart1.brain.denied_charging
+            when q = 1 do q:=0 goto idle;
+        edge Cart2.brain.granted_storage, Cart2.brain.granted_picking, Cart2.brain.granted_charging,
+            Cart2.brain.denied_storage, Cart2.brain.denied_picking, Cart2.brain.denied_charging
+            when q>1 do q:=q-1 goto choosing_from_Q;
+        edge Cart2.brain.granted_storage, Cart2.brain.granted_picking, Cart2.brain.granted_charging,
+            Cart2.brain.denied_storage, Cart2.brain.denied_picking, Cart2.brain.denied_charging
+            when q = 1 do q:=0 goto idle;
+
+        edge Cart1.brain.request_storage, Cart1.brain.request_picking, Cart1.brain.request_charging
+            do q := q + 1;
+        edge Cart2.brain.request_storage, Cart2.brain.request_picking, Cart2.brain.request_charging
+            do q := q + 1;
+end
