@@ -1,4 +1,5 @@
-import "Cart model/Cart brain.cif", "Cart model/sensor.cif", "Cart model/DC motor.cif", "Cart model/Battery.cif"; //, "Cart model/Battery.cif";
+import "Cart model/Cart brain.cif", "Cart model/Cart communicator.cif";
+import "Cart model/sensor.cif", "Cart model/DC motor.cif", "Cart model/Battery.cif"; //, "Cart model/Battery.cif";
 
 requirement def M0(Cart_brain brain):
     location Idle:
@@ -22,6 +23,16 @@ requirement def M0(Cart_brain brain):
         edge brain.stop_fw goto Stopped_moving;
     location Stopped_moving:
         edge brain.done_handling_interruption goto Idle;
+end
+
+group def M1(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor; CartComm comms):
+    requirement invariant sensors.Location_barcode_sensor.on_top_of_barcode or not(motor.keep_track_of_direction.turning_right);
+    requirement invariant sensors.Location_barcode_sensor.on_top_of_barcode or not(motor.keep_track_of_direction.turning_left);
+    // Add for lifting mechanism
+
+    requirement brain.request_storage needs sensors.Location_barcode_sensor.on_top_of_barcode; // atomic actions
+    requirement brain.request_picking needs sensors.Location_barcode_sensor.on_top_of_barcode; // atomic actions
+    requirement brain.request_charging needs sensors.Location_barcode_sensor.on_top_of_barcode; // atomic actions
 end
 
 group def M4b(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // infrared-proximity -> E_stop
