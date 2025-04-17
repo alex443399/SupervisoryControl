@@ -5,7 +5,13 @@ import "Cart model/Cart brain.cif", "Cart model/DC motor.cif", "Cart model/Batte
 group def PathPlanner(Cart_brain brain; DC_motor motor):
 
 
-
+    plant is_there_new_location:
+        location no_target_available: initial; marked;
+            edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto target_available;
+        location target_available:
+            edge brain.granted_storage, brain.granted_picking, brain.granted_charging;
+            edge brain.final_location;
+    end
 
     plant planning_handler:
         location no_plan: initial;
