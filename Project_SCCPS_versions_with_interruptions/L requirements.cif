@@ -2,6 +2,28 @@ import "Cart model/Cart brain.cif", "Cart model/Cart communicator.cif", "PathPla
 import "Cart model/DC motor.cif", "Cart model/Lifting_mechanism.cif";
 import "Cart model/Battery.cif";
 
+
+requirement def L2(Cart_brain brain):
+    location L0: initial; marked;
+        edge brain.final_location when brain.last_target_type.picking goto no_rejection_yet_dont_request_storage;
+        // Non-blocking:
+        edge brain.request_storage;
+        edge brain.denied_picking;
+        edge brain.final_location when not(brain.last_target_type.picking);
+
+    location no_rejection_yet_dont_request_storage:
+        edge brain.denied_picking goto picking_location_has_been_rejected;
+
+        // Non-blocking
+        edge brain.final_location;
+    location picking_location_has_been_rejected:
+        edge brain.request_storage goto L0;
+
+        edge brain.denied_picking;
+        edge brain.final_location;
+
+end
+
 requirement def L3(Cart_brain brain; PathPlanner pp):
     location we_can_request:initial;marked;
         edge brain.request_storage, brain.request_picking, brain.request_charging;
@@ -23,46 +45,6 @@ group def L4(Cart_brain brain; DC_motor motor; Lifting_mechanism lift; CartComm 
 
 end
 
-
-// requirement def order_of_requests(Cart_brain brain; Battery bat):
-//     location get_rack_loc:initial;marked;
-//         edge brain.denied_storage, brain.request_storage when bat.high_or_full  goto get_rack_loc;
-//         edge brain.denied_storage   when not(bat.high_or_full) goto get_charging_loc;
-//         edge brain.request_charging goto get_charging_loc;
-//         edge brain.granted_storage  goto move_to_rack;
-//     location move_to_rack:
-//         edge brain.request_picking  goto get_picking_loc;
-//         edge brain.request_charging goto get_charging_loc;
-//     location get_picking_loc:
-//         edge brain.granted_picking  goto move_to_picking;
-//         edge brain.denied_picking   when bat.high_or_full goto get_drop_loc  ;
-//         edge brain.denied_picking   when not(bat.high_or_full) goto get_charging_loc  ;
-//         edge brain.request_charging goto get_charging_loc;
-//     location move_to_picking:
-//         edge brain.start_picking    goto is_picking;
-//         edge brain.request_charging goto get_charging_loc;
-//     location is_picking:
-//         edge brain.stop_picking     goto done_picking;
-//         edge brain.request_charging goto get_charging_loc;
-//     location done_picking:
-//         edge brain.request_picking  goto get_picking_loc;
-//         edge brain.request_charging goto get_charging_loc;
-//     location get_charging_loc:
-//         edge brain.denied_charging, brain.request_charging;
-//         edge brain.granted_charging goto move_to_charging;
-//     location move_to_charging:
-//         edge brain.start_charging   goto is_charging;
-//     location is_charging:
-//         edge brain.stop_charging    goto get_rack_loc;
-//     location get_drop_loc:
-//         edge brain.granted_storage  goto move_to_drop;
-//         edge brain.request_charging goto get_charging_loc;
-//         edge brain.request_storage, brain.denied_storage when bat.high_or_full;
-//         edge brain.denied_storage   when not(bat.high_or_full) goto get_charging_loc;
-//     location move_to_drop:
-//         edge brain.request_storage  when bat.high_or_full  goto get_rack_loc;
-//         edge brain.request_charging goto get_charging_loc;
-// end
 
 requirement def L5(Cart_brain brain; Battery battery):
     location permissible_request:
