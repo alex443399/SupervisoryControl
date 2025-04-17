@@ -8,14 +8,14 @@ requirement def M0(Cart_brain brain):
         edge brain.done_handling_interruption goto Idle;
         edge brain.start_fw goto moving_but_has_not_left_barcode;
 
-    location moving_but_has_not_left_barcode:
+    location moving_but_has_not_left_barcode:marked;
         edge brain.done_handling_interruption;
         edge brain.off_barcode_location goto left_barcode_processing;
 
     location left_barcode_processing:
         edge brain.done_handling_interruption goto in_between_barcodes;
 
-    location in_between_barcodes:
+    location in_between_barcodes:marked;
         edge brain.done_handling_interruption;
         edge brain.on_barcode_location goto reached_new_barcode;
 
@@ -54,7 +54,7 @@ group def M4b(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // 
             edge brain.add_emergency goto EmergencyAck; //emergency acknowledged
         location EmergencyAck:
             edge brain.done_handling_interruption goto Processed;
-        location Processed:
+        location Processed:marked;
             edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption;
             edge brain.infrared_unstimulate goto Resolved;
         location Resolved:
@@ -75,7 +75,7 @@ group def M5(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // t
             edge brain.add_emergency goto EmergencyAck; //emergency acknowledged
         location EmergencyAck:
             edge brain.done_handling_interruption goto Processed;
-        location Processed:
+        location Processed:marked;
             edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption goto Processed;
             edge brain.touch_unstimulate goto Resolved;
         location Resolved:
