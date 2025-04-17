@@ -42,15 +42,8 @@ requirement def L3(Cart_brain brain; PathPlanner pp):
 end
 
 group def L4(Cart_brain brain; DC_motor motor; Lifting_mechanism lift; CartComm comms):
-
-
-    requirement invariant comms.total_requests = 0 or motor.keep_track_of_direction.idle;
-    requirement invariant comms.total_requests = 0 or not(lift.lowering or lift.lifting);
-
-    requirement brain.request_storage needs comms.total_requests = 0;
-    requirement brain.request_picking needs comms.total_requests = 0;
-    requirement brain.request_charging needs comms.total_requests = 0;
-
+    requirement invariant comms.L0 or motor.keep_track_of_direction.idle;
+    requirement invariant comms.L0 or not(lift.lowering or lift.lifting);
 
 end
 
