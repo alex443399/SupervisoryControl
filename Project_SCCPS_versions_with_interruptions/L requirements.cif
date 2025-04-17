@@ -1,4 +1,6 @@
-import "Cart model/Cart brain.cif", "Cart model/Battery.cif";
+import "Cart model/Cart brain.cif", "Cart model/Cart communicator.cif";
+import "Cart model/DC motor.cif", "Cart model/Lifting_mechanism.cif";
+import "Cart model/Battery.cif";
 
 // requirement def L3(Cart_brain brain):
 //     location idle:initial;marked;
@@ -13,22 +15,18 @@ import "Cart model/Cart brain.cif", "Cart model/Battery.cif";
 //         edge brain.granted_charging, brain.denied_charging goto idle;
 // end
 
-// requirement def L4(Cart_brain brain):
-//
-//     location inactive:initial;marked;
-//         edge brain.start_fw, brain.start_l, brain.start_r goto busy; // We can only move when not requesting
-//         edge brain.start_lifting, brain.start_lowering goto busy; // We can only move when not requesting
-//         edge brain.request_storage, brain.request_picking, brain.request_charging goto requesting;
-//     location busy:
-//         edge brain.stop_fw, brain.stop_l, brain.stop_r goto inactive;
-//         edge brain.stop_lifting, brain.stop_lowering goto inactive;
-//         edge brain.start_fw, brain.start_l, brain.start_r;
-//         edge brain.start_lifting, brain.start_lowering;
-//     location requesting:
-//         edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto inactive;
-//         edge brain.denied_storage, brain.denied_picking, brain.denied_charging goto inactive;
-//
-// end
+group def L4(Cart_brain brain; DC_motor motor; Lifting_mechanism lift; CartComm comms):
+
+
+    requirement invariant comms.total_requests = 0 or motor.keep_track_of_direction.idle;
+    requirement invariant comms.total_requests = 0 or not(lift.lowering or lift.lifting);
+
+    requirement brain.request_storage needs comms.total_requests = 0;
+    requirement brain.request_picking needs comms.total_requests = 0;
+    requirement brain.request_charging needs comms.total_requests = 0;
+
+
+end
 
 
 // requirement def order_of_requests(Cart_brain brain; Battery bat):
