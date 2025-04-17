@@ -11,11 +11,29 @@ group def Cart_brain():
     uncontrollable on_barcode_location, off_barcode_location;
 //     uncontrollable on_barcode_product, off_barcode_product;
 
-    // Communicator events (not yet)
-//     controllable request_storage, request_picking, request_charging;
-//     uncontrollable granted_storage, granted_picking, granted_charging;
-//     uncontrollable denied_storage, denied_picking, denied_charging;
-//     event touch_stimulate, infrared_stimulate, scan_production_stack_barcode;
+//     Communicator events
+    controllable request_storage, request_picking, request_charging;
+    uncontrollable granted_storage, granted_picking, granted_charging;
+    uncontrollable denied_storage, denied_picking, denied_charging;
+
+    plant last_target_type:
+        location none:initial;
+            edge granted_storage goto storage;
+            edge granted_picking goto picking;
+            edge granted_charging goto charging;
+        location storage:
+            edge granted_storage goto storage;
+            edge granted_picking goto picking;
+            edge granted_charging goto charging;
+        location picking:
+            edge granted_storage goto storage;
+            edge granted_picking goto picking;
+            edge granted_charging goto charging;
+        location charging:
+            edge granted_storage goto storage;
+            edge granted_picking goto picking;
+            edge granted_charging goto charging;
+    end
 
 //     battery events
     controllable start_charging, stop_charging, replace_battery;
@@ -66,6 +84,7 @@ group def Cart_brain():
             edge done_handling_interruption goto Listening;
             edge add_emergency, fix_emergency;
     end
+
 
 
 end

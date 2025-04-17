@@ -75,28 +75,3 @@ group def PathPlanner(Cart_brain brain):
 
 end
 
-group def P0(PathPlanner pp; Cart_brain brain):
-    requirement brain.start_fw needs pp.execution_summary.Executing;
-    requirement brain.start_r needs pp.execution_summary.Executing;
-    requirement brain.start_l needs pp.execution_summary.Executing;
-    requirement brain.stop_fw needs pp.execution_summary.Executing;
-    requirement brain.on_barcode_location needs pp.execution_summary.Executing;
-    requirement brain.off_barcode_location needs pp.execution_summary.Executing;
-end
-
-group def P1(PathPlanner pp): // requirement P1 : start_planning needs execution_handler.idle;
-    // This is a convention choice, we could include Standby_execution, because it is technically not executing.
-    // However, if we are on standby we want to be able to start executing right away. If we are on standby and we start
-    // planning then we need to wait to start executing, so it does not work for our application
-    requirement pp.start_planning needs pp.execution_summary.idle;
-end
-
-group def P2(PathPlanner pp): // requirement P2 : start_executing needs planning_handler.new_plan;
-    requirement pp.start_executing needs pp.planning_handler.new_plan;
-end
-
-// group def P3(PathPlanner pp; Battery bat):
-    // Also needs information about the target location, for the case where we have low battery, and we are going to charge
-//     requirement pp.do_not_abort needs (bat.battery_level.battery_high or bat.battery_level.battery_full);
-// end
-
