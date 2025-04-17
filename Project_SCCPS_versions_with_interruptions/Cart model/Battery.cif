@@ -5,6 +5,8 @@ group def Battery(Cart_brain brain; DC_motor motor):
 
     alg bool high_or_full = battery_level.battery_high or battery_level.battery_full;
 
+    plant invariant not(battery_charging.is_charging) or brain.current_location.charging;
+
     plant battery_charging:
         location not_charging: initial; marked;
             edge brain.start_charging goto is_charging;
