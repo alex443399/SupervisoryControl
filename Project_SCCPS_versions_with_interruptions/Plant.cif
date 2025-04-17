@@ -21,7 +21,7 @@ group def Cart_system():
     pp : PathPlanner(brain);
 
     m0_req : M0(brain);
-    m1_req : M1(brain, sensors_and_cameras, motor, comms);
+    m1_req : M1(brain, sensors_and_cameras, motor, lift, comms);
     m4b_req : M4b(brain, sensors_and_cameras, motor);
     m5_req : M5(brain, sensors_and_cameras, motor);
     m6_req : M6(brain, battery, motor);

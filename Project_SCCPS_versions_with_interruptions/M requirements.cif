@@ -30,7 +30,7 @@ group def M1(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor; Lifti
     requirement invariant sensors.Location_barcode_sensor.on_top_of_barcode or not(motor.keep_track_of_direction.turning_left);
     // For lifting mechanism
     requirement invariant sensors.Location_barcode_sensor.on_top_of_barcode or not(lift.lifting);
-    requirement invariant sensors.Location_barcode_sensor.on_top_of_barcode or not(motor.lowering);
+    requirement invariant sensors.Location_barcode_sensor.on_top_of_barcode or not(lift.lowering);
 
     requirement brain.request_storage needs sensors.Location_barcode_sensor.on_top_of_barcode; // atomic actions
     requirement brain.request_picking needs sensors.Location_barcode_sensor.on_top_of_barcode; // atomic actions
