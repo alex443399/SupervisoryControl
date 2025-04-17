@@ -49,11 +49,9 @@ group def L4(Cart_brain brain; DC_motor motor; Lifting_mechanism lift; CartComm 
 end
 
 
-requirement def L5(Cart_brain brain; Battery battery):
-    location permissible_request:
-        initial;
-        marked;
-        edge brain.request_charging when (battery.battery_level.battery_empty or
+group def L5(Cart_brain brain; Battery battery):
+
+    requirement brain.request_charging needs (battery.battery_level.battery_empty or
             battery.battery_level.battery_critical or battery.battery_level.battery_low);
 end
 
