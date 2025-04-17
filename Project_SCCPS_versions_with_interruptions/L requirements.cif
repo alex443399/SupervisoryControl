@@ -8,7 +8,8 @@ requirement def L1(Cart_brain brain):
         marked;
         edge brain.final_location when brain.last_target_type.storage goto permissible_picking_or_storage_request;
     location permissible_picking_or_storage_request:
-        edge brain.request_picking when (brain.last_target_type.storage or brain.last_target_type.picking);
+        marked;
+        edge brain.final_location when brain.last_target_type.picking;
         edge brain.final_location when brain.last_target_type.storage goto permissible_storage_request;
 end
 
