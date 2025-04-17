@@ -1,8 +1,8 @@
-import "Cart model/Cart brain.cif", "Cart model/Battery.cif";
+import "Cart model/Cart brain.cif", "Cart model/DC motor.cif", "Cart model/Battery.cif";
 
 
 
-group def PathPlanner(Cart_brain brain):
+group def PathPlanner(Cart_brain brain; DC_motor motor):
 
     controllable plan_standby, start_planning;
     uncontrollable done_planning;
@@ -25,6 +25,8 @@ group def PathPlanner(Cart_brain brain):
             edge plan_standby goto Standby_Plan;
     end
 
+    plant invariant execution_summary.Executing or motor.keep_track_of_direction.idle;
+
     plant execution_summary:
         location idle: marked; initial;
             edge executing_on_standby goto Standby_execution;
@@ -38,11 +40,10 @@ group def PathPlanner(Cart_brain brain):
         // we go on standby and then start
         location idle: initial; marked;
             edge executing_on_standby goto Standby_execution;
-
-            edge brain.on_barcode_location, brain.done_handling_interruption; // Maybe we are moving but we are not executing a specific path
+            edge brain.done_handling_interruption;
         location Standby_execution:
             edge start_executing goto Abort_Prematurely;
-            edge brain.on_barcode_location, brain.done_handling_interruption; // Maybe we are moving but we are not executing a specific path
+            edge brain.done_handling_interruption;
 
         // We check the initial barcode, as well as if we want to abort immidiately
         location Abort_Prematurely:
@@ -70,6 +71,7 @@ group def PathPlanner(Cart_brain brain):
             edge brain.done_handling_interruption goto FinishedPathing;
         // We broadcast to everyone that we are done with the execution
         location FinishedPathing:
+            edge brain.done_handling_interruption;
             edge finish_executing goto idle;
     end
 
