@@ -1,19 +1,14 @@
-import "Cart model/Cart brain.cif", "Cart model/Cart communicator.cif";
+import "Cart model/Cart brain.cif", "Cart model/Cart communicator.cif", "PathPlanner.cif";
 import "Cart model/DC motor.cif", "Cart model/Lifting_mechanism.cif";
 import "Cart model/Battery.cif";
 
-// requirement def L3(Cart_brain brain):
-//     location idle:initial;marked;
-//         edge brain.request_storage goto requesting_storage;
-//         edge brain.request_picking goto requesting_picking;
-//         edge brain.request_charging goto requesting_charging;
-//     location requesting_storage:
-//         edge brain.granted_storage, brain.denied_storage goto idle;
-//     location requesting_picking:
-//         edge brain.granted_picking, brain.denied_picking goto idle;
-//     location requesting_charging:
-//         edge brain.granted_charging, brain.denied_charging goto idle;
-// end
+requirement def L3(Cart_brain brain; PathPlanner pp):
+    location we_can_request:initial;marked;
+        edge brain.request_storage, brain.request_picking, brain.request_charging;
+        edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto request_has_been_granted;
+    location request_has_been_granted: // cannot request until completed
+        edge pp.finish_executing goto we_can_request;
+end
 
 group def L4(Cart_brain brain; DC_motor motor; Lifting_mechanism lift; CartComm comms):
 
