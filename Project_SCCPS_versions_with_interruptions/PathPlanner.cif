@@ -8,7 +8,7 @@ group def PathPlanner(Cart_brain brain; DC_motor motor):
     plant is_there_new_location:
         location no_target_available: initial; marked;
             edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto target_available;
-        location target_available:
+        location target_available: marked;
             edge brain.granted_storage, brain.granted_picking, brain.granted_charging;
             edge brain.final_location;
     end
