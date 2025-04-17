@@ -76,11 +76,13 @@ requirement def L7(Cart_brain brain):
         edge brain.final_location when not brain.last_target_type.storage goto pick_or_charge;
         edge brain.final_location when brain.last_target_type.storage goto at_drop_rack_location;
     location at_drop_rack_location:
+        marked;
         edge brain.start_lowering goto lowering;
     location lowering:
         edge brain.stop_lowering goto idle;
         edge brain.start_lowering;
     location pick_or_charge:
+        marked;
         edge brain.final_location when brain.last_target_type.storage goto at_drop_rack_location;
         edge brain.final_location when not brain.last_target_type.storage;
 end
