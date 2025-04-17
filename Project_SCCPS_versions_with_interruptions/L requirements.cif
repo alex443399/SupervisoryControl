@@ -1,0 +1,80 @@
+import "Cart model/Cart brain.cif", "Cart model/Battery.cif";
+
+// requirement def L3(Cart_brain brain):
+//     location idle:initial;marked;
+//         edge brain.request_storage goto requesting_storage;
+//         edge brain.request_picking goto requesting_picking;
+//         edge brain.request_charging goto requesting_charging;
+//     location requesting_storage:
+//         edge brain.granted_storage, brain.denied_storage goto idle;
+//     location requesting_picking:
+//         edge brain.granted_picking, brain.denied_picking goto idle;
+//     location requesting_charging:
+//         edge brain.granted_charging, brain.denied_charging goto idle;
+// end
+
+// requirement def L4(Cart_brain brain):
+//
+//     location inactive:initial;marked;
+//         edge brain.start_fw, brain.start_l, brain.start_r goto busy; // We can only move when not requesting
+//         edge brain.start_lifting, brain.start_lowering goto busy; // We can only move when not requesting
+//         edge brain.request_storage, brain.request_picking, brain.request_charging goto requesting;
+//     location busy:
+//         edge brain.stop_fw, brain.stop_l, brain.stop_r goto inactive;
+//         edge brain.stop_lifting, brain.stop_lowering goto inactive;
+//         edge brain.start_fw, brain.start_l, brain.start_r;
+//         edge brain.start_lifting, brain.start_lowering;
+//     location requesting:
+//         edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto inactive;
+//         edge brain.denied_storage, brain.denied_picking, brain.denied_charging goto inactive;
+//
+// end
+
+
+// requirement def order_of_requests(Cart_brain brain; Battery bat):
+//     location get_rack_loc:initial;marked;
+//         edge brain.denied_storage, brain.request_storage when bat.high_or_full  goto get_rack_loc;
+//         edge brain.denied_storage   when not(bat.high_or_full) goto get_charging_loc;
+//         edge brain.request_charging goto get_charging_loc;
+//         edge brain.granted_storage  goto move_to_rack;
+//     location move_to_rack:
+//         edge brain.request_picking  goto get_picking_loc;
+//         edge brain.request_charging goto get_charging_loc;
+//     location get_picking_loc:
+//         edge brain.granted_picking  goto move_to_picking;
+//         edge brain.denied_picking   when bat.high_or_full goto get_drop_loc  ;
+//         edge brain.denied_picking   when not(bat.high_or_full) goto get_charging_loc  ;
+//         edge brain.request_charging goto get_charging_loc;
+//     location move_to_picking:
+//         edge brain.start_picking    goto is_picking;
+//         edge brain.request_charging goto get_charging_loc;
+//     location is_picking:
+//         edge brain.stop_picking     goto done_picking;
+//         edge brain.request_charging goto get_charging_loc;
+//     location done_picking:
+//         edge brain.request_picking  goto get_picking_loc;
+//         edge brain.request_charging goto get_charging_loc;
+//     location get_charging_loc:
+//         edge brain.denied_charging, brain.request_charging;
+//         edge brain.granted_charging goto move_to_charging;
+//     location move_to_charging:
+//         edge brain.start_charging   goto is_charging;
+//     location is_charging:
+//         edge brain.stop_charging    goto get_rack_loc;
+//     location get_drop_loc:
+//         edge brain.granted_storage  goto move_to_drop;
+//         edge brain.request_charging goto get_charging_loc;
+//         edge brain.request_storage, brain.denied_storage when bat.high_or_full;
+//         edge brain.denied_storage   when not(bat.high_or_full) goto get_charging_loc;
+//     location move_to_drop:
+//         edge brain.request_storage  when bat.high_or_full  goto get_rack_loc;
+//         edge brain.request_charging goto get_charging_loc;
+// end
+
+requirement def L5(Cart_brain brain; Battery battery):
+    location permissible_request:
+        initial;
+        marked;
+        edge brain.request_charging when (battery.battery_level.battery_empty or
+            battery.battery_level.battery_critical or battery.battery_level.battery_low);
+end
