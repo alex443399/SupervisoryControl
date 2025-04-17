@@ -3,9 +3,9 @@ group def Cart_brain():
     controllable start_fw, start_l, start_r, stop_fw;
     uncontrollable stop_l, stop_r;
 
-    // Lifiting event (not yet)
-//     controllable start_lifting, start_lowering, interrupt_lift;
-//     uncontrollable stop_lifting, stop_lowering;
+    // Lifiting event
+    controllable start_lifting, start_lowering, interrupt_lift;
+    uncontrollable stop_lifting, stop_lowering;
 
     // Barcode events
     uncontrollable on_barcode_location, off_barcode_location;
@@ -21,15 +21,15 @@ group def Cart_brain():
             edge granted_storage goto storage;
             edge granted_picking goto picking;
             edge granted_charging goto charging;
-        location storage:
+        location storage:marked;
             edge granted_storage goto storage;
             edge granted_picking goto picking;
             edge granted_charging goto charging;
-        location picking:
+        location picking:marked;
             edge granted_storage goto storage;
             edge granted_picking goto picking;
             edge granted_charging goto charging;
-        location charging:
+        location charging:marked;
             edge granted_storage goto storage;
             edge granted_picking goto picking;
             edge granted_charging goto charging;
