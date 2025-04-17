@@ -1,0 +1,41 @@
+import "Cart brain.cif";
+
+plant def Lifting_mechanism(Cart_brain cart):
+
+    location lift_down:
+        initial; marked;
+        edge cart.start_lifting when cart.Emergency_handler.No_emergency goto lifting;
+
+        edge cart.add_emergency, cart.fix_emergency; // non blocking emergency
+
+    location lifting:
+        edge cart.stop_lifting goto lift_up; // finished going up
+        edge cart.interrupt_lift goto lift_middle; // interrupt midway willingly
+
+        edge cart.add_emergency goto emergency_break; // emergency stop
+    location lift_up:
+        marked;
+        edge cart.start_lowering when cart.Emergency_handler.No_emergency goto lowering;
+
+        edge cart.add_emergency, cart.fix_emergency;// Non blocking
+
+    location lowering:
+        edge cart.stop_lowering goto lift_down;
+        edge cart.interrupt_lift goto lift_middle;
+
+        edge cart.add_emergency goto emergency_break;
+
+    location lift_middle:
+        edge cart.start_lifting when cart.Emergency_handler.No_emergency goto lifting;
+        edge cart.start_lowering when cart.Emergency_handler.No_emergency goto lowering;
+
+        edge cart.add_emergency goto emergency_break;
+
+    location emergency_break:
+        edge cart.fix_emergency
+            when cart.Emergency_handler.E_count = 1 goto lift_middle;
+
+        edge cart.fix_emergency when cart.Emergency_handler.E_count != 1;
+        edge cart.add_emergency;
+end
+
