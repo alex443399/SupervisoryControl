@@ -22,7 +22,7 @@ requirement def L2(Cart_brain brain):
         edge brain.denied_picking;
         edge brain.final_location when not(brain.last_target_type.picking);
 
-    location no_rejection_yet_dont_request_storage:
+    location no_rejection_yet_dont_request_storage:marked;
         edge brain.denied_picking goto picking_location_has_been_rejected;
 
         // Non-blocking
@@ -39,7 +39,7 @@ requirement def L3(Cart_brain brain; PathPlanner pp):
     location we_can_request:initial;marked;
         edge brain.request_storage, brain.request_picking, brain.request_charging;
         edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto request_has_been_granted;
-    location request_has_been_granted: // cannot request until completed
+    location request_has_been_granted:marked; // cannot request until completed
         edge brain.finish_executing goto we_can_request;
 end
 
