@@ -35,6 +35,30 @@ group def Cart_brain():
             edge granted_charging goto charging;
     end
 
+
+    controllable plan_standby, start_planning;
+    uncontrollable done_planning;
+
+    controllable executing_on_standby, start_executing; // get the execution on standby and then start
+    controllable finish_executing; // This means we are done executing, for whatever reason, and return to idle
+
+    controllable abort, do_not_abort; // We chose if we want to abort path
+    uncontrollable final_location, not_final_location; // When we check if we reached the final location,
+    // we do not control if we reached or not, hence uncontrollable
+    plant current_location:
+        location charging:initial; marked;
+            edge start_executing goto unknown;
+        location picking: marked;
+            edge start_executing goto unknown;
+        location storage: marked;
+            edge start_executing goto unknown;
+        location unknown: marked;
+            edge abort, start_executing;
+            edge final_location when last_target_type.storage goto storage;
+            edge final_location when last_target_type.picking goto picking;
+            edge final_location when last_target_type.charging goto charging;
+    end
+
 //     battery events
     controllable start_charging, stop_charging, replace_battery;
     uncontrollable charge, discharge;

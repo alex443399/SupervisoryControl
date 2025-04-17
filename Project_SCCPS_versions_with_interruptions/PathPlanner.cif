@@ -4,66 +4,59 @@ import "Cart model/Cart brain.cif", "Cart model/DC motor.cif", "Cart model/Batte
 
 group def PathPlanner(Cart_brain brain; DC_motor motor):
 
-    controllable plan_standby, start_planning;
-    uncontrollable done_planning;
 
-    controllable executing_on_standby, start_executing; // get the execution on standby and then start
-    controllable finish_executing; // This means we are done executing, for whatever reason, and return to idle
-    controllable abort, do_not_abort; // We chose if we want to abort path
-    uncontrollable final_location, not_final_location; // When we check if we reached the final location,
-    // we do not control if we reached or not, hence uncontrollable
 
 
     plant planning_handler:
         location no_plan: initial;
-            edge plan_standby goto Standby_Plan;
+            edge brain.plan_standby goto Standby_Plan;
         location Standby_Plan:
-            edge start_planning goto Planning;
+            edge brain.start_planning goto Planning;
         location Planning:
-            edge done_planning goto new_plan;
+            edge brain.done_planning goto new_plan;
         location new_plan: marked;
-            edge plan_standby goto Standby_Plan;
+            edge brain.plan_standby goto Standby_Plan;
     end
 
     plant invariant execution_summary.Executing or motor.keep_track_of_direction.idle;
 
     plant execution_summary:
         location idle: marked; initial;
-            edge executing_on_standby goto Standby_execution;
+            edge brain.executing_on_standby goto Standby_execution;
         location Standby_execution:
-            edge start_executing goto Executing;
+            edge brain.start_executing goto Executing;
         location Executing:
-            edge finish_executing goto idle;
+            edge brain.finish_executing goto idle;
     end
 
     plant execution_handler:
         // we go on standby and then start
         location idle: initial; marked;
-            edge executing_on_standby goto Standby_execution;
+            edge brain.executing_on_standby goto Standby_execution;
             edge brain.done_handling_interruption;
         location Standby_execution:
-            edge start_executing goto Abort_Prematurely;
+            edge brain.start_executing goto Abort_Prematurely;
             edge brain.done_handling_interruption;
 
         // We check the initial barcode, as well as if we want to abort immidiately
         location Abort_Prematurely:
-            edge abort, finish_executing goto FinishedPathing;
-            edge do_not_abort goto Check_initial_barcode;
+            edge brain.abort, brain.finish_executing goto FinishedPathing;
+            edge brain.do_not_abort goto Check_initial_barcode;
             edge brain.done_handling_interruption;
         location Check_initial_barcode:
-            edge final_location goto FinishedPathing;
-            edge not_final_location goto Pathing;
+            edge brain.final_location goto FinishedPathing;
+            edge brain.not_final_location goto Pathing;
             edge brain.done_handling_interruption;
         // Every time we see a barcode we consider aborting and check if we reached the final destination
         location Pathing:
             edge brain.on_barcode_location goto Abort;
             edge brain.done_handling_interruption;
         location Abort:
-            edge abort goto finishProcessingInterruption;
-            edge do_not_abort goto Check_location;
+            edge brain.abort goto finishProcessingInterruption;
+            edge brain.do_not_abort goto Check_location;
         location Check_location:
-            edge final_location goto finishProcessingInterruption;
-            edge not_final_location goto second_finishProcessingInterruption;
+            edge brain.final_location goto finishProcessingInterruption;
+            edge brain.not_final_location goto second_finishProcessingInterruption;
         // We synchronize with the interruption handler
         location second_finishProcessingInterruption:
             edge brain.done_handling_interruption goto Pathing;
@@ -72,7 +65,7 @@ group def PathPlanner(Cart_brain brain; DC_motor motor):
         // We broadcast to everyone that we are done with the execution
         location FinishedPathing:
             edge brain.done_handling_interruption;
-            edge finish_executing goto idle;
+            edge brain.finish_executing goto idle;
     end
 
 end

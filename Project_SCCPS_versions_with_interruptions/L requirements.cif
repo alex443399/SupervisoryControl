@@ -7,7 +7,7 @@ requirement def L3(Cart_brain brain; PathPlanner pp):
         edge brain.request_storage, brain.request_picking, brain.request_charging;
         edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto request_has_been_granted;
     location request_has_been_granted: // cannot request until completed
-        edge pp.finish_executing goto we_can_request;
+        edge brain.finish_executing goto we_can_request;
 end
 
 group def L4(Cart_brain brain; DC_motor motor; Lifting_mechanism lift; CartComm comms):
