@@ -6,10 +6,11 @@ requirement def L1(Cart_brain brain):
     location permissible_storage_request:
         initial;
         marked;
+        edge brain.final_location when brain.last_target_type.charging;
         edge brain.final_location when brain.last_target_type.storage goto permissible_picking_or_storage_request;
     location permissible_picking_or_storage_request:
         marked;
-        edge brain.final_location when brain.last_target_type.picking;
+        edge brain.final_location when not brain.last_target_type.storage;
         edge brain.final_location when brain.last_target_type.storage goto permissible_storage_request;
 end
 
