@@ -9,8 +9,8 @@ group def PathPlanner(Cart_brain brain; DC_motor motor):
         location no_target_available: initial; marked;
             edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto target_available;
         location target_available: marked;
-            edge brain.granted_storage, brain.granted_picking, brain.granted_charging;
-            edge brain.final_location;
+//             edge brain.granted_storage, brain.granted_picking, brain.granted_charging;
+            edge brain.finish_executing;
     end
 
     plant planning_handler:
@@ -32,7 +32,7 @@ group def PathPlanner(Cart_brain brain; DC_motor motor):
             edge brain.executing_on_standby goto Standby_execution;
         location Standby_execution:
             edge brain.start_executing goto Executing;
-        location Executing:
+        location Executing: marked;
             edge brain.finish_executing goto idle;
     end
 
@@ -55,7 +55,7 @@ group def PathPlanner(Cart_brain brain; DC_motor motor):
             edge brain.not_final_location goto Pathing;
             edge brain.done_handling_interruption;
         // Every time we see a barcode we consider aborting and check if we reached the final destination
-        location Pathing:
+        location Pathing:marked; // there is always the risk that we stay pathing forever
             edge brain.on_barcode_location goto Abort;
             edge brain.done_handling_interruption;
         location Abort:
