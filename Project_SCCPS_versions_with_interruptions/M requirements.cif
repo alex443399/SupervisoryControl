@@ -103,9 +103,7 @@ group def M6(Cart_brain brain; Battery bat; DC_motor motor): // touch -> E_stop
             edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption;
             edge brain.replace_battery goto Resolved;
         location Resolved:
-            edge brain.fix_emergency goto EmergencyLifted;
-        location EmergencyLifted:
-            edge brain.done_handling_interruption goto Idle;
+            edge brain.fix_emergency goto Idle;
     end
 end
 
