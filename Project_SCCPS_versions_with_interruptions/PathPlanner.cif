@@ -18,7 +18,8 @@ group def PathPlanner(Cart_brain brain; DC_motor motor):
             edge brain.plan_standby goto Standby_Plan;
     end
 
-    plant invariant execution_summary.Executing or motor.keep_track_of_direction.idle;
+    plant invariant motor.keep_track_of_direction.idle or
+        not(execution_handler.idle or execution_handler.Standby_execution or execution_handler.Abort_Prematurely or execution_handler.Check_initial_barcode);
 
     plant execution_summary:
         location idle: marked; initial;
