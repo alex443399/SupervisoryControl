@@ -53,3 +53,7 @@ requirement def L5(Cart_brain brain; Battery battery):
         edge brain.request_charging when (battery.battery_level.battery_empty or
             battery.battery_level.battery_critical or battery.battery_level.battery_low);
 end
+
+group def L6(Lifting_mechanism lift; PathPlanner pp):
+    requirement invariant pp.execution_summary.idle or not(lift.lowering or lift.lifting);
+end
