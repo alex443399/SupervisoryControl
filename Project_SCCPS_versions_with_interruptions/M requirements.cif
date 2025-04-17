@@ -109,10 +109,9 @@ group def M6(Cart_brain brain; Battery bat; DC_motor motor): // touch -> E_stop
     end
 end
 
-group def M7(Cart_brain brain; DC_motor motor; Battery bat):
-    requirement invariant motor.keep_track_of_direction.moving_forward and (not brain.current_location.charging or bat.battery_level.battery_full);
-    requirement invariant motor.keep_track_of_direction.turning_left and (not brain.current_location.charging or bat.battery_level.battery_full);
-    requirement invariant motor.keep_track_of_direction.turning_right and (not brain.current_location.charging or bat.battery_level.battery_full);
+group def M7(Cart_brain brain; Battery bat):
+    requirement brain.stop_charging needs bat.battery_level.battery_full;
+    //requirement brain.start_fw needs not bain.current_location.charging or bat.battery_level.battery_full;
 end
 
 group def QOL(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor; Battery bat):
