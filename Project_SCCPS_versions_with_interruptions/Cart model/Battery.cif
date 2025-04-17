@@ -3,6 +3,8 @@ import "Cart brain.cif", "DC motor.cif";
 group def Battery(Cart_brain brain; DC_motor motor):
     alg bool guard_discharge = battery_charging.not_charging and motor.emergency_breaks.ebreaks_off and not(motor.keep_track_of_direction.idle);
 
+    alg bool high_or_full = battery_level.battery_high or battery_level.battery_full;
+
     plant battery_charging:
         location not_charging: initial; marked;
             edge brain.start_charging goto is_charging;
