@@ -45,7 +45,7 @@ Cart2 : Cart_system();
 
 plant AA_resource_allocator:
     controllable process;
-    disc int[0..2*5*3] q = 0; // 2 carts, 5 max requests, 3 types of requests
+    disc int[0..2] q = 0; // 2 carts, 5 max requests, 3 types of requests
 
     location idle:initial;marked;
         edge Cart1.brain.request_storage, Cart1.brain.request_picking, Cart1.brain.request_charging
