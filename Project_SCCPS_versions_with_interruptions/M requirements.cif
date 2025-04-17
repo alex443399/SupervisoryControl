@@ -37,6 +37,12 @@ group def M1(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor; Lifti
     requirement brain.request_charging needs sensors.Location_barcode_sensor.on_top_of_barcode; // atomic actions
 end
 
+group def M2(Cart_brain brain; Lifting_mechanism lift):
+    requirement brain.start_fw needs not (lift.lifting or lift.lowering);
+    requirement brain.start_l needs not (lift.lifting or lift.lowering);
+    requirement brain.start_r needs not (lift.lifting or lift.lowering);
+end
+
 group def M4b(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // infrared-proximity -> E_stop
     requirement M4_aux_1:
         location Idle:
@@ -101,6 +107,12 @@ group def M6(Cart_brain brain; Battery bat; DC_motor motor): // touch -> E_stop
         location EmergencyLifted:
             edge brain.done_handling_interruption goto Idle;
     end
+end
+
+group def M7(Cart_brain brain; DC_motor motor; Battery bat):
+    requirement invariant motor.keep_track_of_direction.moving_forward and (not brain.current_location.charging or bat.battery_level.battery_full);
+    requirement invariant motor.keep_track_of_direction.turning_left and (not brain.current_location.charging or bat.battery_level.battery_full);
+    requirement invariant motor.keep_track_of_direction.turning_right and (not brain.current_location.charging or bat.battery_level.battery_full);
 end
 
 group def QOL(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor; Battery bat):
