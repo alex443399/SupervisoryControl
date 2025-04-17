@@ -57,3 +57,25 @@ end
 group def L6(Lifting_mechanism lift; PathPlanner pp):
     requirement invariant pp.execution_summary.idle or not(lift.lowering or lift.lifting);
 end
+
+requirement def L7(Cart_brain brain):
+    location idle:
+        initial;
+        marked;
+        edge brain.final_location when not brain.last_target_type.storage;
+        edge brain.final_location when brain.last_target_type.storage goto at_get_rack_location;
+   location at_get_rack_location:
+        edge brain.start_lifting goto lifting;
+    location lifting:
+        edge brain.stop_lifting goto has_rack_lifted;
+    location has_rack_lifted:
+        edge brain.final_location when not brain.last_target_type.storage goto pick_or_charge;
+        edge brain.final_location when brain.last_target_type.storage goto at_drop_rack_location;
+    location at_drop_rack_location:
+        edge brain.start_lowering goto lowering;
+    location lowering:
+        edge brain.stop_lowering goto idle;
+    location pick_or_charge:
+        edge brain.final_location when brain.last_target_type.storage goto at_drop_rack_location;
+        edge brain.final_location when not brain.last_target_type.storage;
+end
