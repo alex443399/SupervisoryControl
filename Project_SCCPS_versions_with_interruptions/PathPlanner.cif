@@ -5,23 +5,22 @@ import "Cart model/Cart brain.cif", "Cart model/DC motor.cif", "Cart model/Batte
 group def PathPlanner(Cart_brain brain; DC_motor motor):
 
 
-    plant is_there_new_location:
-        location no_target_available: initial; marked;
+    plant is_there_a_target:
+        location no_target_available: initial;
             edge brain.granted_storage, brain.granted_picking, brain.granted_charging goto target_available;
         location target_available: marked;
-//             edge brain.granted_storage, brain.granted_picking, brain.granted_charging;
-            edge brain.finish_executing;
+            edge brain.granted_storage, brain.granted_picking, brain.granted_charging;
     end
 
     plant planning_handler:
         location no_plan: initial;
-            edge brain.plan_standby goto Standby_Plan;
+            edge brain.plan_standby when is_there_a_target.target_available goto Standby_Plan;
         location Standby_Plan:
             edge brain.start_planning goto Planning;
         location Planning:
             edge brain.done_planning goto new_plan;
         location new_plan: marked;
-            edge brain.plan_standby goto Standby_Plan;
+            edge brain.plan_standby when is_there_a_target.target_available goto Standby_Plan;
     end
 
     plant invariant motor.keep_track_of_direction.idle or
