@@ -33,13 +33,13 @@ group def Cart_system():
     p2_req : P2(brain, pp);
     p3_req : P3(brain, battery);
 //
-//     l1_req : L1(brain);
+    l1_req : L1(brain);
 //     l2_req : L2(brain);
     l3_req : L3(brain, pp);
     l4_req : L4(brain, motor, lift, comms);
     l5_req : L5(brain, battery);
-//     l6_req : L6(lift, pp);
-// //     l7_req : L7(brain);
+    l6_req : L6(lift, pp);
+//     l7_req : L7(brain);
 
 end
 
