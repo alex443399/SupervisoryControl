@@ -25,7 +25,7 @@ requirement def M0(Cart_brain brain):
         edge brain.done_handling_interruption goto Idle;
 end
 
-group def M1(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor; Lifting_mechanism lift; CartComm comms):
+group def M1(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor; Lifting_mechanism lift):
     requirement invariant sensors.Location_barcode_sensor.on_top_of_barcode or not(motor.keep_track_of_direction.turning_right);
     requirement invariant sensors.Location_barcode_sensor.on_top_of_barcode or not(motor.keep_track_of_direction.turning_left);
     // For lifting mechanism
@@ -42,19 +42,17 @@ group def M2(DC_motor motor; Lifting_mechanism lift):
     requirement invariant motor.keep_track_of_direction.idle or not(lift.lifting or lift.lowering);
 end
 
-group def M4b(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // infrared-proximity -> E_stop
+group def M4b(Cart_brain brain): // infrared-proximity -> E_stop
     requirement M4_aux_1:
-        location Idle:
-            initial;
-            marked;
-            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption;
+        location Idle: initial; marked;
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption;// non blocking
             edge brain.infrared_stimulate goto Processing;
         location Processing:
             edge brain.add_emergency goto EmergencyAck; //emergency acknowledged
         location EmergencyAck:
             edge brain.done_handling_interruption goto Processed;
         location Processed:
-            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption;
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption; // non blocking
             edge brain.infrared_unstimulate goto Resolved;
         location Resolved:
             edge brain.fix_emergency goto EmergencyLifted;
@@ -63,19 +61,17 @@ group def M4b(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // 
     end
 end
 
-group def M5(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // touch -> E_stop
+group def M5(Cart_brain brain): // touch -> E_stop
     requirement M5_aux_1:
-        location Idle:
-            initial;
-            marked;
-            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption goto Idle;
+        location Idle: initial; marked;
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption; // non blocking
             edge brain.touch_stimulate goto Processing;
         location Processing:
             edge brain.add_emergency goto EmergencyAck; //emergency acknowledged
         location EmergencyAck:
             edge brain.done_handling_interruption goto Processed;
         location Processed:
-            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption goto Processed;
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption; // non blocking
             edge brain.touch_unstimulate goto Resolved;
         location Resolved:
             edge brain.fix_emergency goto EmergencyLifted;
@@ -85,21 +81,22 @@ group def M5(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // t
 end
 
 
-group def M6(Cart_brain brain; Battery bat; DC_motor motor): // touch -> E_stop
+group def M6(Cart_brain brain; Battery bat): // touch -> E_stop
     requirement M6_aux_1:
         alg bool battery_needs_changing = bat.battery_level.battery_empty or bat.battery_level.battery_critical;
         location Idle:
             initial;
             marked;
-            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption goto Idle;
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption; // Nonblocking
             edge brain.discharge goto Processing;
         location Processing:
             edge brain.add_emergency when battery_needs_changing goto EmergencyAck; //emergency acknowledged
             edge brain.done_handling_interruption when not(battery_needs_changing) goto Idle;
         location EmergencyAck:
             edge brain.done_handling_interruption goto Battery_is_in_need_of_change;
+
         location Battery_is_in_need_of_change:
-            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption;
+            edge brain.add_emergency, brain.fix_emergency, brain.done_handling_interruption; // non-blocking
             edge brain.replace_battery goto Resolved;
         location Resolved:
             edge brain.fix_emergency goto EmergencyLifted;

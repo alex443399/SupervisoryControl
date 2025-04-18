@@ -102,7 +102,7 @@ group def Cart_brain():
                 touch_stimulate,touch_unstimulate, // touch
                 infrared_stimulate,infrared_unstimulate, // IR
 //                 stop_l, stop_r, // DC motor, for simplicity
-                charge, discharge // battery
+                charge, discharge, replace_battery // battery
                 goto Handling_interruption;
         location Handling_interruption:
             edge done_handling_interruption goto Listening;
