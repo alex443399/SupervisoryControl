@@ -39,7 +39,7 @@ end
 
 group def M2(DC_motor motor; Lifting_mechanism lift):
     // either we are lifting and not moving or moving and not lifting
-    requirement motor.keep_track_of_direction.idle or not(lift.lifting or lift.lowering);
+    requirement invariant motor.keep_track_of_direction.idle or not(lift.lifting or lift.lowering);
 end
 
 group def M4b(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor): // infrared-proximity -> E_stop
