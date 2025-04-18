@@ -106,8 +106,8 @@ group def M6(Cart_brain brain; Battery bat): // touch -> E_stop
 end
 
 group def M7(Cart_brain brain; Battery bat):
-    requirement brain.stop_charging needs bat.battery_level.battery_full;
-    //requirement brain.start_fw needs not brain.current_location.charging or bat.battery_level.battery_full;
+//     requirement brain.stop_charging needs bat.battery_level.battery_full;
+    requirement brain.start_fw needs not brain.current_location.charging or bat.battery_level.battery_full;
 end
 
 group def QOL(Cart_brain brain; Sensor_and_cameras sensors; DC_motor motor; Battery bat):

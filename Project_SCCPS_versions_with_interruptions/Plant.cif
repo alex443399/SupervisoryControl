@@ -26,7 +26,7 @@ group def Cart_system():
     m4b_req : M4b(brain);
     m5_req : M5(brain);
     m6_req : M6(brain, battery);
-//     m7_req : M7(brain, motor, battery);
+    m7_req : M7(brain, battery);
 //     quality_of_life : QOL(brain, sensors_and_cameras, motor, battery);
 
     p1_req : P1(brain, pp);
