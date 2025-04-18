@@ -22,14 +22,16 @@ group def Cart_system():
 //
     m0_req : M0(brain);
     m1_req : M1(brain, sensors_and_cameras, motor, lift, comms);
-    m4b_req : M4b(brain, sensors_and_cameras, motor);
-    m5_req : M5(brain, sensors_and_cameras, motor);
-    m6_req : M6(brain, battery, motor);
-// //     quality_of_life : QOL(brain, sensors_and_cameras, motor, battery);
-//
-//     p1_req : P1(brain, pp);
-//     p2_req : P2(brain, pp);
-//     p3_req : P3(brain, battery);
+    m2_req : M2(motor, lift);
+//     m4b_req : M4b(brain, sensors_and_cameras, motor);
+//     m5_req : M5(brain, sensors_and_cameras, motor);
+//     m6_req : M6(brain, battery, motor);
+//     m7_req : M7(brain, motor, battery);
+//     quality_of_life : QOL(brain, sensors_and_cameras, motor, battery);
+
+    p1_req : P1(brain, pp);
+    p2_req : P2(brain, pp);
+    p3_req : P3(brain, battery);
 //
 //     l1_req : L1(brain);
 //     l2_req : L2(brain);
@@ -37,7 +39,7 @@ group def Cart_system():
 //     l4_req : L4(brain, motor, lift, comms);
 //     l5_req : L5(brain, battery);
 //     l6_req : L6(lift, pp);
-//     l7_req : L7(brain);
+// //     l7_req : L7(brain);
 
 end
 
